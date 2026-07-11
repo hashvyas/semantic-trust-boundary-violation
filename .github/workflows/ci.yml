@@ -1,0 +1,76 @@
+name: ISCE Pipeline CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install core dependencies (no ML deps -- B3 runs in stub mode)
+        run: |
+          pip install pyyaml numpy pandas pytest
+
+      - name: Unit tests -- B2 explainability + trust engine (29 checks)
+        run: python3 tests/test_b2_trust_engine.py
+
+      - name: Unit tests -- adapters layer (25 checks)
+        run: python3 tests/test_adapters.py
+
+      - name: Dependency graph verification (25 checks)
+        run: python3 tests/verify_dependency_graph.py
+
+      - name: Regression sweep -- benign fixtures
+        run: python3 manual_pipeline_test.py --pipeline test_messages/benign
+
+      - name: Regression sweep -- b1_fail fixtures (malformed/invalid/replay)
+        run: python3 manual_pipeline_test.py --pipeline test_messages/b1_fail
+
+      - name: Regression sweep -- context fixtures
+        run: python3 manual_pipeline_test.py --pipeline test_messages/context/urban
+
+      - name: Scenario sweep -- sybil attack
+        run: python3 manual_pipeline_test.py --pipeline scenarios/sybil
+
+      - name: Scenario sweep -- replay attack
+        run: python3 manual_pipeline_test.py --pipeline scenarios/replay
+
+      - name: Scenario sweep -- collusion attack
+        run: python3 manual_pipeline_test.py --pipeline scenarios/collusion
+
+      - name: Scenario sweep -- fabrication attack
+        run: python3 manual_pipeline_test.py --pipeline scenarios/fabrication
+
+      - name: Scenario sweep -- mixed attack
+        run: python3 manual_pipeline_test.py --pipeline scenarios/mixed
+
+  b3-model-check:
+    # Separate job: only runs if a model checkpoint is present in the repo
+    # checkout (large binary -- typically added via Git LFS or a release
+    # asset, not committed directly). Installs the full ML stack and
+    # verifies real inference, not just the stub fallback.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install full ML dependencies
+        run: pip install -r requirements.txt
+      - name: Verify B3 model loads and predicts
+        run: python3 tests/verify_b3_model.py
+        continue-on-error: true  # non-blocking: model checkpoint may be absent in CI

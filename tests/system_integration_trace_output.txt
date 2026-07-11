@@ -1,0 +1,1360 @@
+##############################################################################
+# SYSTEM INTEGRATION VALIDATION SUITE -- Secure V2X Trust Stack
+##############################################################################
+# B3 real model detected: AVAILABLE (real inference will be used)
+##############################################################################
+# Run started: 2026-07-11 09:19:33
+
+==============================================================================
+SCENARIO: 1. Completely benign message
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 1 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+
+  --- message 1/1 (window size=1, 66.4ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_1001', 'cert_id': '5ce8fba7-87ff-47af-98b8-7d07105809ef', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 692759328.5 ms)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.818 confidence_calibration=0.449
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.80, confidence=0.70); MBD passed (score=1.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1001] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970995187759399 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=ACCEPT trust_score=0.818 semantic_risk=none cryptographic_risk=low attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.82 -> ACCEPT (cryptographic_risk=low). B3 found no semantic risk. Final decision: ACCEPT (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=ACCEPT api.status=ACCEPT ds_mass={'m_A': 0.36707750000000006, 'm_not_A': 0.08167250000000004, 'm_Theta': 0.5512499999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 2. Invalid certificate (tampered signature)
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 1 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+
+  --- message 1/1 (window size=1, 25.2ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_1001', 'cert_id': '5ce8fba7-87ff-47af-98b8-7d07105809ef', 'cert_valid': True, 'sig_valid': False, 'pki_pass': False, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 692759441.6 ms)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.818 confidence_calibration=0.449
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.80, confidence=0.70); MBD passed (score=1.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1001] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970995187759399 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=ACCEPT trust_score=0.818 semantic_risk=none cryptographic_risk=low attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.82 -> ACCEPT (cryptographic_risk=low). B3 found no semantic risk. Final decision: ACCEPT (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=ACCEPT api.status=ACCEPT ds_mass={'m_A': 0.36707750000000006, 'm_not_A': 0.08167250000000004, 'm_Theta': 0.5512499999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 3. Expired certificate
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 1 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+
+  --- message 1/1 (window size=1, 19.3ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9001', 'cert_id': '85e5171f-6ad9-45c5-91a2-0b76338aa1ba', 'cert_valid': False, 'sig_valid': True, 'pki_pass': False, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 692759498.0 ms)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.818 confidence_calibration=0.449
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.80, confidence=0.70); MBD passed (score=1.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1001] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970995187759399 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=ACCEPT trust_score=0.818 semantic_risk=none cryptographic_risk=low attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.82 -> ACCEPT (cryptographic_risk=low). B3 found no semantic risk. Final decision: ACCEPT (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=ACCEPT api.status=ACCEPT ds_mass={'m_A': 0.36707750000000006, 'm_not_A': 0.08167250000000004, 'm_Theta': 0.5512499999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 4. Replay attack
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 2 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+    [PASS] Input msg[1]: is a dict with expected top-level shape
+
+  --- message 1/2 (window size=1, 18.0ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 13761573774.0 ms)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.818 confidence_calibration=0.449
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.80, confidence=0.70); MBD passed (score=1.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1001] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9971537590026855 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=ACCEPT trust_score=0.818 semantic_risk=none cryptographic_risk=low attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.82 -> ACCEPT (cryptographic_risk=low). B3 found no semantic risk. Final decision: ACCEPT (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=ACCEPT api.status=ACCEPT ds_mass={'m_A': 0.36707750000000006, 'm_not_A': 0.08167250000000004, 'm_Theta': 0.5512499999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 2/2 (window size=2, 20.4ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=False fatal=False score=0.500 reasons=['Replay detected', 'Timestamp stale (age 13761573792.4 ms)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=0.800 replay=1.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.350 confidence_calibration=0.680
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.50, confidence=1.00); MBD flagged an issue (score=0.20, conf
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=2 senders=[1001] cp_confidence=0.827 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9974732995033264 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=REJECT trust_score=0.350 semantic_risk=none cryptographic_risk=high attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.35 -> REJECT (cryptographic_risk=high). B3 found no semantic risk. Final decision: REJECT (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.23799999999999996, 'm_not_A': 0.44199999999999995, 'm_Theta': 0.32000000000000006, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+    [PASS] Final decision matches expected outcome (REJECT)  -- got=REJECT
+
+==============================================================================
+SCENARIO: 5. Sybil attack
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 20 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+    [PASS] Input msg[1]: is a dict with expected top-level shape
+    [PASS] Input msg[2]: is a dict with expected top-level shape
+    [PASS] Input msg[3]: is a dict with expected top-level shape
+    [PASS] Input msg[4]: is a dict with expected top-level shape
+    [PASS] Input msg[5]: is a dict with expected top-level shape
+    [PASS] Input msg[6]: is a dict with expected top-level shape
+    [PASS] Input msg[7]: is a dict with expected top-level shape
+    [PASS] Input msg[8]: is a dict with expected top-level shape
+    [PASS] Input msg[9]: is a dict with expected top-level shape
+    [PASS] Input msg[10]: is a dict with expected top-level shape
+    [PASS] Input msg[11]: is a dict with expected top-level shape
+    [PASS] Input msg[12]: is a dict with expected top-level shape
+    [PASS] Input msg[13]: is a dict with expected top-level shape
+    [PASS] Input msg[14]: is a dict with expected top-level shape
+    [PASS] Input msg[15]: is a dict with expected top-level shape
+    [PASS] Input msg[16]: is a dict with expected top-level shape
+    [PASS] Input msg[17]: is a dict with expected top-level shape
+    [PASS] Input msg[18]: is a dict with expected top-level shape
+    [PASS] Input msg[19]: is a dict with expected top-level shape
+
+  --- message 1/20 (window size=1, 25.4ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1000] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9972782731056213 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 2/20 (window size=2, 32.4ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=1.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=2 senders=[1000, 9000] cp_confidence=0.838 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970453381538391 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 3/20 (window size=3, 27.3ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.90 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.550
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.74); MBD flagged an issue (score=0.00, confidence=0.3
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=3 senders=[1000, 9000] cp_confidence=0.841 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978475570678711 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.27484040040722174, 'm_not_A': 0.27484040040722174, 'm_Theta': 0.4503191991855565, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 4/20 (window size=4, 30.9ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.90 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.644
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.77); MBD flagged an issue (score=0.00, confidence=0.5
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=4 senders=[1000, 9000] cp_confidence=0.845 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.997931718826294 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.3220590718893306, 'm_not_A': 0.3220590718893306, 'm_Theta': 0.35588185622133883, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 5/20 (window size=5, 28.9ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=5 senders=[1000, 1001, 9000] cp_confidence=0.587 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978353381156921 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 6/20 (window size=6, 30.6ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=6 senders=[1000, 1001, 1002, 9000] cp_confidence=0.549 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978663325309753 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 7/20 (window size=7, 34.8ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=7 senders=[1000, 1001, 1002, 1003, 9000] cp_confidence=0.578 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978165626525879 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 8/20 (window size=8, 24.1ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=8 senders=[1000, 1001, 1002, 1003, 1004, 9000] cp_confidence=0.590 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.997820258140564 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 9/20 (window size=9, 25.3ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=9 senders=[1000, 1001, 1002, 1003, 1004, 1005, 9000] cp_confidence=0.577 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978998899459839 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 10/20 (window size=10, 27.3ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=10 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 9000] cp_confidence=0.573 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9977946281433105 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 11/20 (window size=11, 23.5ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=11 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 9000] cp_confidence=0.574 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978399276733398 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 12/20 (window size=12, 21.0ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=12 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 9000] cp_confidence=0.574 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978455305099487 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 13/20 (window size=13, 30.8ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=13 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 9000] cp_confidence=0.575 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978456497192383 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 14/20 (window size=14, 28.2ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=14 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 9000] cp_confidence=0.577 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978634715080261 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 15/20 (window size=15, 31.6ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=15 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 9000] cp_confidence=0.577 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978442192077637 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 16/20 (window size=16, 33.7ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=16 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 9000] cp_confidence=0.578 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978154897689819 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 17/20 (window size=17, 23.4ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=17 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 9000] cp_confidence=0.578 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978353381156921 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 18/20 (window size=18, 33.1ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=18 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 9000] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978493452072144 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 19/20 (window size=19, 24.5ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=19 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 9000] cp_confidence=0.575 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978158473968506 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 20/20 (window size=20, 34.8ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=20 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 9000] cp_confidence=0.575 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978590607643127 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 6. Impossible kinematics (impossible speed)
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 1 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+
+  --- message 1/1 (window size=1, 29.5ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=False fatal=True score=0.000 reasons=['speed 9000.0 outside valid range [0, 8330.0] (ETSI 0.01 m/s units)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.000 confidence_calibration=0.600
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.00, confidence=1.00); MBD flagged an issue (score=0.00, conf
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1001] cp_confidence=0.824 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970071911811829 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=REJECT trust_score=0.000 semantic_risk=unavailable cryptographic_risk=fatal attack_detected=True contributors=['B1', 'B2']
+           reasoning: B1 cryptographic/structural validation failed fatally (speed 9000.0 outside valid range [0, 8330.0] (ETSI 0.01 m/s units)). B3 semantic result not consulted, per policy.
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+    [PASS] Final decision matches expected outcome (REJECT)  -- got=REJECT
+
+==============================================================================
+SCENARIO: 7. Cooperative perception poisoning (collusion)
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 20 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+    [PASS] Input msg[1]: is a dict with expected top-level shape
+    [PASS] Input msg[2]: is a dict with expected top-level shape
+    [PASS] Input msg[3]: is a dict with expected top-level shape
+    [PASS] Input msg[4]: is a dict with expected top-level shape
+    [PASS] Input msg[5]: is a dict with expected top-level shape
+    [PASS] Input msg[6]: is a dict with expected top-level shape
+    [PASS] Input msg[7]: is a dict with expected top-level shape
+    [PASS] Input msg[8]: is a dict with expected top-level shape
+    [PASS] Input msg[9]: is a dict with expected top-level shape
+    [PASS] Input msg[10]: is a dict with expected top-level shape
+    [PASS] Input msg[11]: is a dict with expected top-level shape
+    [PASS] Input msg[12]: is a dict with expected top-level shape
+    [PASS] Input msg[13]: is a dict with expected top-level shape
+    [PASS] Input msg[14]: is a dict with expected top-level shape
+    [PASS] Input msg[15]: is a dict with expected top-level shape
+    [PASS] Input msg[16]: is a dict with expected top-level shape
+    [PASS] Input msg[17]: is a dict with expected top-level shape
+    [PASS] Input msg[18]: is a dict with expected top-level shape
+    [PASS] Input msg[19]: is a dict with expected top-level shape
+
+  --- message 1/20 (window size=1, 23.7ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1000] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9972782731056213 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 2/20 (window size=2, 27.2ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=1.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=2 senders=[1000, 7000] cp_confidence=0.800 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9972367286682129 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 3/20 (window size=3, 22.3ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=3 senders=[1000, 7000, 7001] cp_confidence=0.835 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979752898216248 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 4/20 (window size=4, 19.6ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=4 senders=[1000, 7000, 7001, 7002] cp_confidence=0.879 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9980486631393433 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 5/20 (window size=5, 18.9ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=5 senders=[1000, 1001, 7000, 7001, 7002] cp_confidence=0.626 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979331493377686 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 6/20 (window size=6, 17.8ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=6 senders=[1000, 1001, 1002, 7000, 7001, 7002] cp_confidence=0.585 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979432225227356 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 7/20 (window size=7, 19.2ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=7 senders=[1000, 1001, 1002, 1003, 7000, 7001, 7002] cp_confidence=0.582 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979149699211121 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 8/20 (window size=8, 17.1ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=8 senders=[1000, 1001, 1002, 1003, 1004, 7000, 7001, 7002] cp_confidence=0.577 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978970289230347 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 9/20 (window size=9, 19.6ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=9 senders=[1000, 1001, 1002, 1003, 1004, 1005, 7000, 7001, 7002] cp_confidence=0.574 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979642629623413 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 10/20 (window size=10, 22.4ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=10 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 7000, 7001, 7002] cp_confidence=0.574 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9978493452072144 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 11/20 (window size=11, 18.7ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=11 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 7000, 7001, 7002] cp_confidence=0.575 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979225993156433 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 12/20 (window size=12, 23.4ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=12 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 7000, 7001, 7002] cp_confidence=0.574 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979487061500549 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 13/20 (window size=13, 18.3ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=13 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 7000, 7001, 7002] cp_confidence=0.575 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979068040847778 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 14/20 (window size=14, 19.0ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=14 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 7000, 7001, 7002] cp_confidence=0.577 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979422688484192 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 15/20 (window size=15, 25.8ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=15 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 7000, 7001, 7002] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979099631309509 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 16/20 (window size=16, 21.1ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=16 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 7000, 7001, 7002] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979279041290283 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 17/20 (window size=17, 21.9ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=17 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 7000, 7001, 7002] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979255199432373 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 18/20 (window size=18, 29.6ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=18 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 7000, 7001, 7002] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979598522186279 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 19/20 (window size=19, 25.0ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=19 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 7000, 7001, 7002] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979009628295898 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 20/20 (window size=20, 24.9ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=20 senders=[1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 7000, 7001, 7002] cp_confidence=0.576 cp_pass=False
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9979561567306519 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 8. Semantic manipulation (real B3)
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 1 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+
+  --- message 1/1 (window size=1, 19.1ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=True fatal=False score=1.000 reasons=[]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=False anomaly_score=1.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.445
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION passed (score=1.00, confidence=0.69); MBD flagged an issue (score=0.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1000] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9972782731056213 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=CAUTION trust_score=0.500 semantic_risk=none cryptographic_risk=elevated attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.50 -> CAUTION (cryptographic_risk=elevated). B3 found no semantic risk. Final decision: CAUTION (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.22250000000000003, 'm_not_A': 0.22250000000000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 9. Prompt injection (real B3)
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 1 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+
+  --- message 1/1 (window size=1, 23.5ms) ---
+  [PKI]    None
+    [SKIP] PKI contract check -- layer did not run this scenario (None)
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 692761327.1 ms)']
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.818 confidence_calibration=0.449
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.80, confidence=0.70); MBD passed (score=1.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=[1001] cp_confidence=0.818 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970995187759399 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=ACCEPT trust_score=0.818 semantic_risk=none cryptographic_risk=low attack_detected=False contributors=['B1', 'B2', 'CP', 'B3']
+           reasoning: B1 non-fatal validation score 0.82 -> ACCEPT (cryptographic_risk=low). B3 found no semantic risk. Final decision: ACCEPT (most conservative of the two).
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=ACCEPT api.status=ACCEPT ds_mass={'m_A': 0.36707750000000006, 'm_not_A': 0.08167250000000004, 'm_Theta': 0.5512499999999999, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SCENARIO: 10. Conflicting evidence between layers (explicit conflict check)
+==============================================================================
+  B1 clean (valid, non-fatal): True
+  MBD flagged (sybil_score > 0.3): False
+    [PASS] Conflicting evidence is surfaced (B1 clean + MBD flags concern -> not silently ACCEPT)  -- B1_clean=True, MBD_flagged=False, final=CAUTION
+
+==============================================================================
+SCENARIO: 11. Unavailable modules (MBD + CP disabled)
+==============================================================================
+  mbd=None cp=None decision=ACCEPT
+    [PASS] Pipeline does not crash when MBD/CP unavailable  -- ran to completion
+    [PASS] MBD result is None (not silently faked as passing)
+    [PASS] CP result is None (not silently faked as passing)
+    [PASS] Decision still reached despite unavailable modules
+
+==============================================================================
+SCENARIO: 12. Degraded confidence (sparse evidence)
+==============================================================================
+  b2.confidence_calibration=0.449
+  mbd.behavior_evidence_quality=0.200 (fresh sender, no history)
+    [PASS] MBD reports low behavior_evidence_quality for a fresh sender (no history)  -- got=0.2
+
+##############################################################################
+# ABLATION TESTING
+##############################################################################
+# Disabling one layer at a time (via test-harness monkey-patching ONLY --
+# production code in pipeline/orchestrator.py is never modified for this).
+##############################################################################
+
+--- Baseline (all layers active) ---
+  Replay attack: decision=REJECT
+  Sybil attack: decision=CAUTION
+  Impossible kinematics: decision=REJECT
+
+--- PKI disabled ---
+  Replay attack: decision=REJECT  (pki result: None)
+  Sybil attack: decision=CAUTION  (pki result: None)
+  Impossible kinematics: decision=REJECT  (pki result: None)
+
+--- B1 disabled (neutered to always-pass) ---
+  Replay attack: decision=REJECT  (b1 valid=False, mbd anomaly=0.8)
+  Sybil attack: decision=CAUTION  (b1 valid=True, mbd anomaly=1.0)
+  Impossible kinematics: decision=REJECT  (b1 valid=False, mbd anomaly=1.0)
+
+--- MBD disabled ---
+  Replay attack: decision=CAUTION  (mbd=None)
+    *** ATTACK BECOMES SUCCESSFUL WITHOUT MBD: expected REJECT, got CAUTION ***
+  Sybil attack: decision=CAUTION  (mbd=None)
+  Impossible kinematics: decision=REJECT  (mbd=None)
+
+--- B2 disabled (neutered to no-op passthrough) ---
+  Replay attack: decision=REJECT
+  Sybil attack: decision=CAUTION
+  Impossible kinematics: decision=REJECT
+
+--- CP disabled ---
+  Collusion (CP poisoning): decision=CAUTION  (cp=None)
+
+--- B3 disabled (via synthetic comparison: available vs unavailable) ---
+  With B3 (synthetic high-confidence semantic attack): decision=REJECT
+  Without B3 (unavailable): decision=ACCEPT
+    *** SEMANTIC ATTACK BECOMES SUCCESSFUL WITHOUT B3: expected REJECT, got ACCEPT ***
+
+==============================================================================
+PHASE B: Realistic V2X Semantic Attack Scenarios
+==============================================================================
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Emergency vehicle priority abuse (Falsified intent/role)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.95 risk_level=high
+  FinalTrustDecision: trust_level=REJECT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged high-confidence semantic signal (label=MALICIOUS, confidence=0.95) -> REJECT. Final decision: REJECT (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Emergency vehicle priority abuse (Falsified intent/role)': trust_level == REJECT  -- got=REJECT
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: False road closure (Uncorroborated DENM)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.65 risk_level=medium
+  FinalTrustDecision: trust_level=CAUTION reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged medium-confidence semantic signal (label=MALICIOUS, confidence=0.65) -> CAUTION. Final decision: CAUTION (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: False road closure (Uncorroborated DENM)': trust_level == CAUTION  -- got=CAUTION
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: CP narrative poisoning (3+ colluders converging)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.9 risk_level=high
+  FinalTrustDecision: trust_level=REJECT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged high-confidence semantic signal (label=MALICIOUS, confidence=0.90) -> REJECT. Final decision: REJECT (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: CP narrative poisoning (3+ colluders converging)': trust_level == REJECT  -- got=REJECT
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Fake hazard propagation (Relayed hazard w/o local sensor)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.6 risk_level=medium
+  FinalTrustDecision: trust_level=CAUTION reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged medium-confidence semantic signal (label=MALICIOUS, confidence=0.60) -> CAUTION. Final decision: CAUTION (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Fake hazard propagation (Relayed hazard w/o local sensor)': trust_level == CAUTION  -- got=CAUTION
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Route manipulation (Gradual kinematic drift)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.2 risk_level=low
+  FinalTrustDecision: trust_level=CAUTION reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged low-confidence semantic signal (label=MALICIOUS, confidence=0.20) -> CAUTION. Final decision: CAUTION (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Route manipulation (Gradual kinematic drift)': trust_level == CAUTION  -- got=CAUTION
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Semantic replay (Reused narrative, new ID/timestamp)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.85 risk_level=high
+  FinalTrustDecision: trust_level=REJECT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged high-confidence semantic signal (label=MALICIOUS, confidence=0.85) -> REJECT. Final decision: REJECT (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Semantic replay (Reused narrative, new ID/timestamp)': trust_level == REJECT  -- got=REJECT
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Intent manipulation (Yielding code + accelerating)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.7 risk_level=medium
+  FinalTrustDecision: trust_level=CAUTION reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged medium-confidence semantic signal (label=MALICIOUS, confidence=0.70) -> CAUTION. Final decision: CAUTION (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Intent manipulation (Yielding code + accelerating)': trust_level == CAUTION  -- got=CAUTION
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Coordinated semantic collusion (Corroborated false text fields)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.95 risk_level=high
+  FinalTrustDecision: trust_level=REJECT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged high-confidence semantic signal (label=MALICIOUS, confidence=0.95) -> REJECT. Final decision: REJECT (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Coordinated semantic collusion (Corroborated false text fields)': trust_level == REJECT  -- got=REJECT
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Prompt injection in V2X payload (Adversarial text in free field)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.9 risk_level=high
+  FinalTrustDecision: trust_level=REJECT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged high-confidence semantic signal (label=MALICIOUS, confidence=0.90) -> REJECT. Final decision: REJECT (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Prompt injection in V2X payload (Adversarial text in free field)': trust_level == REJECT  -- got=REJECT
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Conflicting contextual narratives (Mutually exclusive local events)
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.65 risk_level=medium
+  FinalTrustDecision: trust_level=CAUTION reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged medium-confidence semantic signal (label=MALICIOUS, confidence=0.65) -> CAUTION. Final decision: CAUTION (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Conflicting contextual narratives (Mutually exclusive local events)': trust_level == CAUTION  -- got=CAUTION
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: V2X Scenario: Benign control (Ordinary CAM)
+==============================================================================
+  synthetic B3 input: label=BENIGN confidence=0.99 risk_level=none
+  FinalTrustDecision: trust_level=ACCEPT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 found no semantic risk. Final decision: ACCEPT (most conservative of the two).
+    [PASS] Synthetic semantic test 'V2X Scenario: Benign control (Ordinary CAM)': trust_level == ACCEPT  -- got=ACCEPT
+
+==============================================================================
+FLAGSHIP: Complete coordinated STBV attack
+==============================================================================
+
+==============================================================================
+SCENARIO: FLAGSHIP Stage 1: Coordinated STBV execution
+==============================================================================
+    [PASS] Input: messages list is non-empty  -- 4 message(s)
+    [PASS] Input msg[0]: is a dict with expected top-level shape
+    [PASS] Input msg[1]: is a dict with expected top-level shape
+    [PASS] Input msg[2]: is a dict with expected top-level shape
+    [PASS] Input msg[3]: is a dict with expected top-level shape
+
+  --- message 1/4 (window size=1, 24.3ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': 'd7b14d5a-97e7-49e1-962e-55f0bafa0047', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.500 confidence_calibration=0.600
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.00, confidence=1.00); MBD passed (score=1.00, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=1 senders=['colluder_station_9000'] cp_confidence=0.824 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9970593452453613 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=REJECT trust_score=0.000 semantic_risk=unavailable cryptographic_risk=fatal attack_detected=True contributors=['B1', 'B2']
+           reasoning: B1 cryptographic/structural validation failed fatally (Missing mandatory fields: station_id, header.station_id: cannot convert 'str' to int). B3 semantic result not consulted, per policy.
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 2/4 (window size=2, 34.0ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': 'd7b14d5a-97e7-49e1-962e-55f0bafa0047', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.800 replay=0.90 sybil=1.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.100 confidence_calibration=0.600
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.00, confidence=1.00); MBD passed (score=0.20, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=2 senders=['colluder_station_9000', 'colluder_station_9001'] cp_confidence=0.864 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9973937273025513 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=REJECT trust_score=0.000 semantic_risk=unavailable cryptographic_risk=fatal attack_detected=True contributors=['B1', 'B2']
+           reasoning: B1 cryptographic/structural validation failed fatally (Missing mandatory fields: station_id, header.station_id: cannot convert 'str' to int). B3 semantic result not consulted, per policy.
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 3/4 (window size=3, 26.9ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': 'd7b14d5a-97e7-49e1-962e-55f0bafa0047', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.800 replay=0.90 sybil=1.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.100 confidence_calibration=0.600
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.00, confidence=1.00); MBD passed (score=0.20, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=3 senders=['colluder_station_9000', 'colluder_station_9001', 'colluder_station_9002'] cp_confidence=0.904 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9981301426887512 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=REJECT trust_score=0.000 semantic_risk=unavailable cryptographic_risk=fatal attack_detected=True contributors=['B1', 'B2']
+           reasoning: B1 cryptographic/structural validation failed fatally (Missing mandatory fields: station_id, header.station_id: cannot convert 'str' to int). B3 semantic result not consulted, per policy.
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+  --- message 4/4 (window size=4, 27.7ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': 'd7b14d5a-97e7-49e1-962e-55f0bafa0047', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+    [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
+  [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
+    [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
+  [MBD]    passed=True anomaly_score=0.800 replay=0.90 sybil=1.00 collusion=0.00 kinematic=1.00
+    [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
+  [B2]     valid=False score=0.100 confidence_calibration=0.600
+           explanation: Combined trust evidence from 2 upstream layer(s): B1_VALIDATION flagged an issue (score=0.00, confidence=1.00); MBD passed (score=0.20, confidence=0.2
+    [PASS] B2 (ExplainabilityReport) interface contract: has all required keys  -- keys present: ['confidence_calibration', 'evidence', 'explanation_text', 'provenance', 'validation_score', 'validation_valid']
+  [CP]     num_reports=4 senders=['colluder_station_9000', 'colluder_station_9001', 'colluder_station_9002', 'colluder_station_9003'] cp_confidence=0.944 cp_pass=True
+    [PASS] CP (CPResult) interface contract: has all required keys  -- keys present: ['boundary', 'cp_confidence', 'cp_pass', 'diversity_score', 'event_label', 'fusion_confidence', 'heading_score', 'num_reports', 'reports', 'senders', 'spatial_score', 'speed_score']
+  [B3]     available=True label=BENIGN confidence=0.9981865286827087 risk_level=none status=ok
+    [PASS] B3 (SemanticResult) interface contract: has all required keys  -- keys present: ['available', 'confidence', 'label', 'risk_level', 'status']
+  [TrustDecisionEngine] trust_level=REJECT trust_score=0.000 semantic_risk=unavailable cryptographic_risk=fatal attack_detected=True contributors=['B1', 'B2']
+           reasoning: B1 cryptographic/structural validation failed fatally (Missing mandatory fields: station_id, header.station_id: cannot convert 'str' to int). B3 semantic result not consulted, per policy.
+    [PASS] TrustDecisionEngine (FinalTrustDecision) interface contract: has all required keys  -- keys present: ['attack_detected', 'confidence', 'contributors', 'cryptographic_risk', 'details', 'reasoning', 'semantic_risk', 'trust_level', 'trust_score']
+  [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
+    [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
+
+==============================================================================
+SYNTHETIC SEMANTIC TEST: FLAGSHIP Stage 2: B3 Corroboration of STBV Attack
+==============================================================================
+  synthetic B3 input: label=MALICIOUS confidence=0.95 risk_level=high
+  FinalTrustDecision: trust_level=REJECT reasoning=B1 non-fatal validation score 1.00 -> ACCEPT (cryptographic_risk=low). B3 flagged high-confidence semantic signal (label=MALICIOUS, confidence=0.95) -> REJECT. Final decision: REJECT (most conservative of the two).
+    [PASS] Synthetic semantic test 'FLAGSHIP Stage 2: B3 Corroboration of STBV Attack': trust_level == REJECT  -- got=REJECT
+
+##############################################################################
+# SCENARIO SUMMARY
+##############################################################################
+  1. Completely benign message: decision=ACCEPT
+  2. Invalid certificate (tampered signature): decision=ACCEPT
+  3. Expired certificate: decision=ACCEPT
+  4. Replay attack: decision=REJECT [MATCH]
+  5. Sybil attack: decision=CAUTION
+  6. Impossible kinematics (impossible speed): decision=REJECT [MATCH]
+  7. Cooperative perception poisoning (collusion): decision=CAUTION
+  8. Semantic manipulation (real B3): decision=CAUTION
+  9. Prompt injection (real B3): decision=ACCEPT
+  10. Conflicting evidence: decision=CAUTION
+  11. Unavailable modules: decision=ACCEPT
+  12. Degraded confidence: decision=ACCEPT
+  [synthetic] V2X Scenario: Emergency vehicle priority abuse (Falsified intent/role): decision=REJECT [MATCH]
+  [synthetic] V2X Scenario: False road closure (Uncorroborated DENM): decision=CAUTION [MATCH]
+  [synthetic] V2X Scenario: CP narrative poisoning (3+ colluders converging): decision=REJECT [MATCH]
+  [synthetic] V2X Scenario: Fake hazard propagation (Relayed hazard w/o local sensor): decision=CAUTION [MATCH]
+  [synthetic] V2X Scenario: Route manipulation (Gradual kinematic drift): decision=CAUTION [MATCH]
+  [synthetic] V2X Scenario: Semantic replay (Reused narrative, new ID/timestamp): decision=REJECT [MATCH]
+  [synthetic] V2X Scenario: Intent manipulation (Yielding code + accelerating): decision=CAUTION [MATCH]
+  [synthetic] V2X Scenario: Coordinated semantic collusion (Corroborated false text fields): decision=REJECT [MATCH]
+  [synthetic] V2X Scenario: Prompt injection in V2X payload (Adversarial text in free field): decision=REJECT [MATCH]
+  [synthetic] V2X Scenario: Conflicting contextual narratives (Mutually exclusive local events): decision=CAUTION [MATCH]
+  [synthetic] V2X Scenario: Benign control (Ordinary CAM): decision=ACCEPT [MATCH]
+  FLAGSHIP Stage 1: Coordinated STBV execution: decision=REJECT
+  [synthetic] FLAGSHIP Stage 2: B3 Corroboration of STBV Attack: decision=REJECT [MATCH]
+
+##############################################################################
+# ABLATION SUMMARY -- which attacks succeed when a layer is removed
+##############################################################################
+  *** MBD removed -> 'Replay attack' attack SUCCEEDS (decision degraded from REJECT) ***
+  *** B3 removed -> 'Semantic attack (synthetic)' attack SUCCEEDS (decision degraded from REJECT) ***
+  none (baseline) removed -> 'Replay attack': decision=REJECT (no attack success detected)
+  none (baseline) removed -> 'Sybil attack': decision=CAUTION (no attack success detected)
+  none (baseline) removed -> 'Impossible kinematics': decision=REJECT (no attack success detected)
+  PKI removed -> 'Replay attack': decision=REJECT (no attack success detected)
+  PKI removed -> 'Sybil attack': decision=CAUTION (no attack success detected)
+  PKI removed -> 'Impossible kinematics': decision=REJECT (no attack success detected)
+  B1 removed -> 'Replay attack': decision=REJECT (no attack success detected)
+  B1 removed -> 'Sybil attack': decision=CAUTION (no attack success detected)
+  B1 removed -> 'Impossible kinematics': decision=REJECT (no attack success detected)
+  MBD removed -> 'Sybil attack': decision=CAUTION (no attack success detected)
+  MBD removed -> 'Impossible kinematics': decision=REJECT (no attack success detected)
+  B2 removed -> 'Replay attack': decision=REJECT (no attack success detected)
+  B2 removed -> 'Sybil attack': decision=CAUTION (no attack success detected)
+  B2 removed -> 'Impossible kinematics': decision=REJECT (no attack success detected)
+  CP removed -> 'Collusion (CP poisoning)': decision=CAUTION (no attack success detected)
+
+##############################################################################
+# All interface contract checks passed.
+##############################################################################

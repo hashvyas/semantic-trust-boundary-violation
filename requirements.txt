@@ -1,0 +1,20 @@
+# Core pipeline dependencies (B1, B2, trust_engine) -- no ML deps needed.
+PyYAML>=6.0
+numpy>=1.24
+pandas>=2.0
+
+# B3 semantic gate -- required only to run the real DeBERTa classifier.
+# Without these, pipeline/b3_bridge.py falls back gracefully to
+# StubSemanticClassifier (available=False) and the rest of the pipeline
+# still runs; the trust_engine treats B3 as SemanticRisk.UNAVAILABLE.
+torch>=2.1
+transformers>=4.40
+sentencepiece>=0.1.99
+
+# Optional: visualization used by manual_pipeline_test.py (--step /
+# observability graphs). Not required for headless/pipeline use.
+networkx>=3.0
+matplotlib>=3.7
+
+# Testing
+pytest>=7.0
