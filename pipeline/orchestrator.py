@@ -166,7 +166,15 @@ class ISCEPipeline:
         if sig is None or cert is None or pub is None:
             return None
         from pki import pki_layer
-        return pki_layer(target_msg, sig, cert, pub, self.pki_ca)
+        # verify_signature() does json.dumps(msg) on whatever is passed as
+        # pki_layer()'s msg argument -- it must be exactly the canonical
+        # message content, never the _pki_* keys themselves (those carry
+        # non-JSON-serializable raw key/signature objects, and a message
+        # verifying itself inclusive of its own signature field is
+        # incoherent regardless of serializability). Strip them here so
+        # every caller (not just a test harness) gets a working PKI path.
+        canonical_msg = {k: v for k, v in target_msg.items() if not k.startswith("_pki_")}
+        return pki_layer(canonical_msg, sig, cert, pub, self.pki_ca)
 
     def _run_mbd(self, target_msg: Dict[str, Any]) -> Dict[str, Any]:
         from mbd import mbd_layer

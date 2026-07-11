@@ -187,8 +187,15 @@ def build_pipeline(
         scsv=scsv, enable_mbd=enable_mbd, enable_cp=enable_cp, pki_ca=pki_ca,
         adapters={"log": LoggingAdapter(), "api": APIAdapter(), "ds_mass": DSMassAdapter()},
     )
-    if pki_ca is not None:
-        patch_pki_verification_scope(pipe)  # harness-only PKI contract fix, no restore needed (pipe is fresh per scenario)
+    # NOTE: patch_pki_verification_scope() is intentionally NOT applied here
+    # anymore. pipeline/orchestrator.py::_run_pki now strips harness/
+    # transport _pki_* metadata itself before calling pki_layer(), matching
+    # pki_layer.py's actual signing/verification contract -- see that
+    # method's inline comment. The shim below is kept, unused, as a
+    # regression tripwire: if a future change to _run_pki reintroduces the
+    # bug, re-enabling the shim call here would silently mask it again, so
+    # don't re-enable it -- fix orchestrator.py instead and let this
+    # function fail loudly.
     return pipe
 
 

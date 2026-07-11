@@ -1,0 +1,227 @@
+{
+  "b3_available": false,
+  "results": {
+    "Benign (negative control)": {
+      "B1-only": {
+        "accuracy": 0.0,
+        "precision": 0.0,
+        "recall": NaN,
+        "f1": NaN,
+        "n": 4,
+        "tp": 0,
+        "fp": 4,
+        "fn": 0,
+        "tn": 0
+      },
+      "B1+B2": {
+        "accuracy": 1.0,
+        "precision": NaN,
+        "recall": NaN,
+        "f1": NaN,
+        "n": 4,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 4,
+        "caution_rate": 1.0
+      },
+      "B1+B2+B3 (full)": {
+        "accuracy": 1.0,
+        "precision": NaN,
+        "recall": NaN,
+        "f1": NaN,
+        "n": 4,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 4,
+        "caution_rate": 1.0
+      }
+    },
+    "Replay attack": {
+      "B1-only": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 20,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 17
+      },
+      "B1+B2": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 20,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 17,
+        "caution_rate": 0.85
+      },
+      "B1+B2+B3 (full)": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "n": 20,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 17,
+        "caution_rate": 0.85
+      }
+    },
+    "Sybil attack": {
+      "B1-only": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17
+      },
+      "B1+B2": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      },
+      "B1+B2+B3 (full)": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      }
+    },
+    "Position/content fabrication": {
+      "B1-only": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17
+      },
+      "B1+B2": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      },
+      "B1+B2+B3 (full)": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      }
+    },
+    "Coordinated collusion": {
+      "B1-only": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17
+      },
+      "B1+B2": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      },
+      "B1+B2+B3 (full)": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      }
+    },
+    "Mixed traffic": {
+      "B1-only": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17
+      },
+      "B1+B2": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      },
+      "B1+B2+B3 (full)": {
+        "accuracy": 0.85,
+        "precision": NaN,
+        "recall": 0.0,
+        "f1": NaN,
+        "n": 20,
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "tn": 17,
+        "caution_rate": 1.0
+      }
+    }
+  }
+}

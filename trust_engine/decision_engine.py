@@ -6,18 +6,41 @@ B2 (ExplainabilityReport), and B3 (SemanticResult) into a FinalTrustDecision.
 
 No B-layer imports another layer; this module is the sole composition
 point, per the architecture's separation-of-concerns constraint.
+
+FUSION RULE (roadmap A3/B1): the non-fatal path below combines the
+crypto/structural evidence (B1, folded with MBD/CP via B2's
+validation_score -- see pipeline/orchestrator.py) and B3's semantic
+evidence via real Dempster-Shafer combination
+(trust_engine/dempster_shafer.py), not a rank/threshold placeholder.
+Each source is mapped to a mass function over {trustworthy, suspicious},
+combined via Dempster's rule, and the combined mass is converted back to
+a scalar trust score via the pignistic transform, banded against the
+same thresholds already used for the crypto score alone (TrustPolicy),
+so the decision rule is consistent whether or not B3 is available.
 """
 
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
+from trust_engine.dempster_shafer import MassFunction, combine
 from trust_engine.exceptions import MissingLayerInputError
 from trust_engine.models import FinalTrustDecision, SemanticRisk, TrustLevel
 from trust_engine.policy import TrustPolicy
 
+# Confidence clamp applied before building any mass function. Prevents a
+# source from becoming "dogmatic" (m_theta == 0), which under Dempster's
+# rule would give it absolute veto power over any conflicting evidence
+# from the other source, however strong -- see
+# trust_engine/dempster_shafer.py's module docstring for the full
+# citation/explanation, and tests/test_dempster_shafer_fusion.py for the
+# regression test proving this matters (without the clamp, a "clean" B1
+# would silently discard a 99%-confident B3 MALICIOUS verdict).
+MAX_SOURCE_CONFIDENCE = 0.98
+
 
 class TrustDecisionEngine:
+
     def __init__(self, policy: Optional[TrustPolicy] = None) -> None:
         self.policy = policy or TrustPolicy()
 
@@ -69,60 +92,115 @@ class TrustDecisionEngine:
         if semantic_result.get("available", False):
             contributors.append("B3")
 
-        # Rule 2/3: B1 passed (possibly with non-fatal issues) -> weigh both
-        # the cryptographic/validation score band AND B3's semantic risk,
-        # taking the more conservative (lower-trust) of the two. This closes
-        # a gap where a non-fatal but low-scoring/invalid B1 result (e.g.
-        # stale timestamp, marginal cert rotation) would otherwise be
-        # silently overridden to ACCEPT whenever B3 found nothing. Banding
-        # is purely score-driven (not gated on the `valid` flag) so the
-        # bands are monotonic and unambiguous.
+        # cryptographic_risk (reported field) still describes the crypto/
+        # structural layer's own standing, independent of fusion -- this
+        # banding is unchanged from before.
         if b1_score < self.policy.cryptographic_reject_below:
-            crypto_level, crypto_score = TrustLevel.REJECT, b1_score
             cryptographic_risk = "high"
         elif b1_score < self.policy.cryptographic_caution_below:
-            crypto_level, crypto_score = TrustLevel.CAUTION, b1_score
             cryptographic_risk = "elevated"
         else:
-            crypto_level, crypto_score = TrustLevel.ACCEPT, b1_score
             cryptographic_risk = "low"
 
-        if semantic_risk == SemanticRisk.HIGH:
-            semantic_level, semantic_score = TrustLevel.REJECT, 0.1
-            attack_detected = True
-        elif semantic_risk == SemanticRisk.MEDIUM:
-            semantic_level, semantic_score = TrustLevel.CAUTION, 0.5
-            attack_detected = False
-        elif semantic_risk == SemanticRisk.LOW:
-            semantic_level, semantic_score = TrustLevel.CAUTION, 0.7
-            attack_detected = False
-        else:  # NONE or UNAVAILABLE
-            semantic_level, semantic_score = TrustLevel.ACCEPT, 1.0
-            attack_detected = False
+        # === Dempster-Shafer fusion (roadmap A3/B1) ===
+        # Map each source to a mass function over {trustworthy, suspicious},
+        # clamping confidence below 1.0 so neither source can become
+        # dogmatic (see MAX_SOURCE_CONFIDENCE's docstring above).
+        crypto_confidence = min(float(explainability_report.get("confidence_calibration", 1.0)), MAX_SOURCE_CONFIDENCE)
+        crypto_mass = MassFunction.from_score_confidence(score=b1_score, confidence=crypto_confidence)
 
-        _RANK = {TrustLevel.ACCEPT: 0, TrustLevel.CAUTION: 1, TrustLevel.REJECT: 2}
-        if _RANK[crypto_level] >= _RANK[semantic_level]:
-            trust_level, trust_score = crypto_level, crypto_score
+        if semantic_risk == SemanticRisk.UNAVAILABLE:
+            semantic_mass = MassFunction.vacuous()
         else:
-            trust_level, trust_score = semantic_level, semantic_score
+            raw_confidence = semantic_result.get("confidence")
+            if raw_confidence is None:
+                # No raw confidence on this SemanticResult (e.g. an older/
+                # external caller supplying only risk_level) -- fall back
+                # to a representative confidence per band so fusion still
+                # has something principled to combine, rather than
+                # silently treating it as vacuous.
+                raw_confidence = {"high": 0.90, "medium": 0.65, "low": 0.40, "none": 0.50}[semantic_risk.value]
+            semantic_confidence = min(float(raw_confidence), MAX_SOURCE_CONFIDENCE)
+            # NONE -> supports "trustworthy"; LOW/MEDIUM/HIGH -> supports
+            # "suspicious", with the actual model confidence (not a fixed
+            # per-band score) driving how much mass is committed.
+            semantic_score_for_mass = 1.0 if semantic_risk == SemanticRisk.NONE else 0.0
+            semantic_mass = MassFunction.from_score_confidence(score=semantic_score_for_mass, confidence=semantic_confidence)
+
+        conflict_mass = crypto_mass.conflict_with(semantic_mass)
+        fused_mass = combine(crypto_mass, semantic_mass)
+        trust_score = fused_mass.pignistic_trust_score()
+
+        if b1_score < self.policy.cryptographic_reject_below:
+            crypto_level_alone = TrustLevel.REJECT
+        elif b1_score < self.policy.cryptographic_caution_below:
+            crypto_level_alone = TrustLevel.CAUTION
+        else:
+            crypto_level_alone = TrustLevel.ACCEPT
+
+        if trust_score < self.policy.cryptographic_reject_below:
+            fused_level = TrustLevel.REJECT
+        elif trust_score < self.policy.cryptographic_caution_below:
+            fused_level = TrustLevel.CAUTION
+        else:
+            fused_level = TrustLevel.ACCEPT
+
+        # Conservative-bias ceiling: B3 (or CP folded into crypto) may make
+        # the decision MORE cautious than crypto alone, never less. Absence
+        # of semantic risk (B3 "NONE") must not inflate trust past what
+        # crypto/structural evidence already earned -- this preserves the
+        # system's conservative-bias design property while still using
+        # real DS fusion (not a hand-picked constant) to determine how
+        # much worse things get when semantic evidence IS unfavorable.
+        _RANK = {TrustLevel.ACCEPT: 0, TrustLevel.CAUTION: 1, TrustLevel.REJECT: 2}
+        trust_level = crypto_level_alone if _RANK[crypto_level_alone] >= _RANK[fused_level] else fused_level
+
+        # --- Explicit policy floors on top of the fused score ---
+        # Yager's rule correctly reports strong disagreement as elevated
+        # uncertainty (see dempster_shafer.py's module docstring), but a
+        # symmetric evidence combination alone will not reliably push a
+        # confident semantic-attack signal all the way to REJECT against
+        # a confident "looks clean" crypto signal -- and for this threat
+        # model it must. These floors are deliberate, asymmetric-cost
+        # policy decisions layered on top of the fusion math (mirroring
+        # the pre-existing B1-fatal short-circuit above, which is the
+        # same kind of override), not a claimed property of Yager's rule
+        # itself:
+        #   - B3 HIGH-confidence semantic risk floors the decision at
+        #     REJECT: a confirmed high-confidence attack signal must not
+        #     be softened by conflicting-but-less-decisive crypto evidence.
+        #   - B3 MEDIUM/LOW-confidence semantic risk floors the decision
+        #     at (at least) CAUTION: a real, if less certain, semantic
+        #     concern must never be silently smoothed away to ACCEPT.
+        if semantic_risk == SemanticRisk.HIGH:
+            trust_level = TrustLevel.REJECT
+        elif semantic_risk in (SemanticRisk.MEDIUM, SemanticRisk.LOW):
+            if _RANK[trust_level] < _RANK[TrustLevel.CAUTION]:
+                trust_level = TrustLevel.CAUTION
+        attack_detected = trust_level == TrustLevel.REJECT
 
         crypto_note = (
-            f"B1 non-fatal validation score {b1_score:.2f} -> {crypto_level.value} "
-            f"(cryptographic_risk={cryptographic_risk})."
+            f"B1(+MBD/CP) crypto/structural mass: m_A={crypto_mass.m_A:.2f} "
+            f"m_not_A={crypto_mass.m_not_A:.2f} m_theta={crypto_mass.m_theta:.2f} "
+            f"(validation_score={b1_score:.2f}, cryptographic_risk={cryptographic_risk})."
         )
         if semantic_risk in (SemanticRisk.NONE, SemanticRisk.UNAVAILABLE):
             b3_note = (
-                "B3 unavailable, decision based on B1+B2 only."
+                "B3 unavailable (vacuous mass, does not affect fusion)."
                 if semantic_risk == SemanticRisk.UNAVAILABLE
-                else "B3 found no semantic risk."
+                else f"B3 found no semantic risk (mass: m_A={semantic_mass.m_A:.2f} m_theta={semantic_mass.m_theta:.2f})."
             )
         else:
             b3_note = (
                 f"B3 flagged {semantic_risk.value}-confidence semantic signal "
-                f"(label={semantic_result.get('label')}, "
-                f"confidence={semantic_result.get('confidence'):.2f}) -> {semantic_level.value}."
+                f"(label={semantic_result.get('label')}, confidence={semantic_result.get('confidence')}) "
+                f"-> mass m_not_A={semantic_mass.m_not_A:.2f} m_theta={semantic_mass.m_theta:.2f}."
             )
-        reasoning = f"{crypto_note} {b3_note} Final decision: {trust_level.value} (most conservative of the two)."
+        reasoning = (
+            f"{crypto_note} {b3_note} Dempster combination: conflict K={conflict_mass:.3f}, "
+            f"fused mass m_A={fused_mass.m_A:.2f} m_not_A={fused_mass.m_not_A:.2f} m_theta={fused_mass.m_theta:.2f}, "
+            f"pignistic trust_score={trust_score:.3f}. Final decision: {trust_level.value}."
+        )
 
         return FinalTrustDecision(
             trust_score=trust_score,
@@ -138,5 +216,9 @@ class TrustDecisionEngine:
                 "explanation": explainability_report.get("explanation_text"),
                 "b3_label": semantic_result.get("label"),
                 "b3_confidence": semantic_result.get("confidence"),
+                "ds_conflict_K": conflict_mass,
+                "ds_fused_mass": {"m_A": fused_mass.m_A, "m_not_A": fused_mass.m_not_A, "m_theta": fused_mass.m_theta},
+                "ds_crypto_mass": {"m_A": crypto_mass.m_A, "m_not_A": crypto_mass.m_not_A, "m_theta": crypto_mass.m_theta},
+                "ds_semantic_mass": {"m_A": semantic_mass.m_A, "m_not_A": semantic_mass.m_not_A, "m_theta": semantic_mass.m_theta},
             },
         )
