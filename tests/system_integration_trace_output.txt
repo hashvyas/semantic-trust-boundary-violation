@@ -3,7 +3,7 @@
 ##############################################################################
 # B3 real model detected: AVAILABLE (real inference will be used)
 ##############################################################################
-# Run started: 2026-07-13 11:26:21
+# Run started: 2026-07-13 14:41:34
 
 ==============================================================================
 SCENARIO: 1. Completely benign message
@@ -11,10 +11,10 @@ SCENARIO: 1. Completely benign message
     [PASS] Input: messages list is non-empty  -- 1 message(s)
     [PASS] Input msg[0]: is a dict with expected top-level shape
 
-  --- message 1/1 (window size=1, 68.5ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_1001', 'cert_id': 'ffc9c161-0dbd-443f-9f9d-a1cbe58a8bb7', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+  --- message 1/1 (window size=1, 114.9ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_1001', 'cert_id': 'af5c93be-5a82-4fc0-8342-eabf00d5bf25', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
-  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 853367351.4 ms)']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 865080539.3 ms)']
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
   [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
     [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
@@ -37,10 +37,10 @@ SCENARIO: 2. Invalid certificate (tampered signature)
     [PASS] Input: messages list is non-empty  -- 1 message(s)
     [PASS] Input msg[0]: is a dict with expected top-level shape
 
-  --- message 1/1 (window size=1, 64.9ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_1001', 'cert_id': 'ffc9c161-0dbd-443f-9f9d-a1cbe58a8bb7', 'cert_valid': True, 'sig_valid': False, 'pki_pass': False, 'revoked': False, 'compromised': False}
+  --- message 1/1 (window size=1, 114.2ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_1001', 'cert_id': 'af5c93be-5a82-4fc0-8342-eabf00d5bf25', 'cert_valid': True, 'sig_valid': False, 'pki_pass': False, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
-  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 853367450.7 ms)']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 865080698.1 ms)']
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
   [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
     [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
@@ -63,10 +63,10 @@ SCENARIO: 3. Expired certificate
     [PASS] Input: messages list is non-empty  -- 1 message(s)
     [PASS] Input msg[0]: is a dict with expected top-level shape
 
-  --- message 1/1 (window size=1, 61.3ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_9001', 'cert_id': '2c256b4f-e9fc-4203-b92b-f895392bcaf5', 'cert_valid': False, 'sig_valid': True, 'pki_pass': False, 'revoked': False, 'compromised': False}
+  --- message 1/1 (window size=1, 87.1ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9001', 'cert_id': '0c0eae2a-4836-4bea-b3e2-fbeec21bc258', 'cert_valid': False, 'sig_valid': True, 'pki_pass': False, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
-  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 853367543.8 ms)']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 865080849.0 ms)']
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
   [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
     [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
@@ -90,10 +90,10 @@ SCENARIO: 4. Replay attack
     [PASS] Input msg[0]: is a dict with expected top-level shape
     [PASS] Input msg[1]: is a dict with expected top-level shape
 
-  --- message 1/2 (window size=1, 62.6ms) ---
+  --- message 1/2 (window size=1, 94.2ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
-  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 13922181855.0 ms)']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 13933895187.2 ms)']
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
   [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
     [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
@@ -110,10 +110,10 @@ SCENARIO: 4. Replay attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.4360060609375001, 'm_not_A': 0.012743939062499966, 'm_Theta': 0.5512499999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 2/2 (window size=2, 86.7ms) ---
+  --- message 2/2 (window size=2, 105.1ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
-  [B1]     valid=False fatal=False score=0.500 reasons=['Replay detected', 'Timestamp stale (age 13922181917.5 ms)']
+  [B1]     valid=False fatal=False score=0.500 reasons=['Replay detected', 'Timestamp stale (age 13933895275.2 ms)']
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
   [MBD]    passed=False anomaly_score=0.800 replay=1.00 sybil=0.00 collusion=0.00 kinematic=1.00
     [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
@@ -156,7 +156,7 @@ SCENARIO: 5. Sybil attack
     [PASS] Input msg[18]: is a dict with expected top-level shape
     [PASS] Input msg[19]: is a dict with expected top-level shape
 
-  --- message 1/20 (window size=1, 62.1ms) ---
+  --- message 1/20 (window size=1, 90.9ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -176,7 +176,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 2/20 (window size=2, 80.3ms) ---
+  --- message 2/20 (window size=2, 91.9ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -196,7 +196,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.26564735500000003, 'm_not_A': 0.02335264500000001, 'm_Theta': 0.711, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 3/20 (window size=3, 137.7ms) ---
+  --- message 3/20 (window size=3, 114.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -216,7 +216,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.28330199483401347, 'm_not_A': 0.026634165328875272, 'm_Theta': 0.6900638398371113, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 4/20 (window size=4, 119.1ms) ---
+  --- message 4/20 (window size=4, 129.1ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -236,7 +236,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.29904477265529344, 'm_not_A': 0.029778856100438802, 'm_Theta': 0.6711763712442678, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 5/20 (window size=5, 117.3ms) ---
+  --- message 5/20 (window size=5, 113.8ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -256,7 +256,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 6/20 (window size=6, 112.6ms) ---
+  --- message 6/20 (window size=6, 105.6ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -296,7 +296,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 8/20 (window size=8, 112.2ms) ---
+  --- message 8/20 (window size=8, 111.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -316,7 +316,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 9/20 (window size=9, 116.4ms) ---
+  --- message 9/20 (window size=9, 116.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -336,7 +336,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 10/20 (window size=10, 114.4ms) ---
+  --- message 10/20 (window size=10, 122.8ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -356,7 +356,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 11/20 (window size=11, 112.0ms) ---
+  --- message 11/20 (window size=11, 116.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -376,7 +376,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 12/20 (window size=12, 117.3ms) ---
+  --- message 12/20 (window size=12, 118.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -396,7 +396,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 13/20 (window size=13, 110.6ms) ---
+  --- message 13/20 (window size=13, 134.9ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -416,7 +416,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 14/20 (window size=14, 116.9ms) ---
+  --- message 14/20 (window size=14, 112.2ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -436,7 +436,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 15/20 (window size=15, 116.0ms) ---
+  --- message 15/20 (window size=15, 123.3ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -456,7 +456,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 16/20 (window size=16, 113.6ms) ---
+  --- message 16/20 (window size=16, 146.5ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -476,7 +476,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 17/20 (window size=17, 113.1ms) ---
+  --- message 17/20 (window size=17, 117.8ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -496,7 +496,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 18/20 (window size=18, 114.8ms) ---
+  --- message 18/20 (window size=18, 104.8ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -516,7 +516,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 19/20 (window size=19, 113.8ms) ---
+  --- message 19/20 (window size=19, 124.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -536,7 +536,7 @@ SCENARIO: 5. Sybil attack
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 20/20 (window size=20, 114.7ms) ---
+  --- message 20/20 (window size=20, 134.1ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -562,7 +562,7 @@ SCENARIO: 6. Impossible kinematics (impossible speed)
     [PASS] Input: messages list is non-empty  -- 1 message(s)
     [PASS] Input msg[0]: is a dict with expected top-level shape
 
-  --- message 1/1 (window size=1, 63.0ms) ---
+  --- message 1/1 (window size=1, 58.0ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=False fatal=True score=0.000 reasons=['speed 9000.0 outside valid range [0, 8330.0] (ETSI 0.01 m/s units)']
@@ -608,7 +608,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
     [PASS] Input msg[18]: is a dict with expected top-level shape
     [PASS] Input msg[19]: is a dict with expected top-level shape
 
-  --- message 1/20 (window size=1, 65.5ms) ---
+  --- message 1/20 (window size=1, 65.3ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -628,7 +628,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 2/20 (window size=2, 81.9ms) ---
+  --- message 2/20 (window size=2, 76.6ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -648,7 +648,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.26564735500000003, 'm_not_A': 0.02335264500000001, 'm_Theta': 0.711, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 3/20 (window size=3, 102.8ms) ---
+  --- message 3/20 (window size=3, 103.2ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -668,7 +668,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 4/20 (window size=4, 109.5ms) ---
+  --- message 4/20 (window size=4, 110.0ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -688,7 +688,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 5/20 (window size=5, 111.0ms) ---
+  --- message 5/20 (window size=5, 124.4ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -708,7 +708,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 6/20 (window size=6, 111.2ms) ---
+  --- message 6/20 (window size=6, 154.1ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -728,7 +728,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 7/20 (window size=7, 117.4ms) ---
+  --- message 7/20 (window size=7, 119.2ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -748,7 +748,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 8/20 (window size=8, 111.2ms) ---
+  --- message 8/20 (window size=8, 111.5ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -768,7 +768,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 9/20 (window size=9, 113.8ms) ---
+  --- message 9/20 (window size=9, 119.5ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -788,7 +788,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 10/20 (window size=10, 109.3ms) ---
+  --- message 10/20 (window size=10, 121.3ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -808,7 +808,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 11/20 (window size=11, 148.1ms) ---
+  --- message 11/20 (window size=11, 135.6ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -828,7 +828,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 12/20 (window size=12, 123.5ms) ---
+  --- message 12/20 (window size=12, 122.0ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -848,7 +848,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 13/20 (window size=13, 115.1ms) ---
+  --- message 13/20 (window size=13, 133.6ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -868,7 +868,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 14/20 (window size=14, 115.9ms) ---
+  --- message 14/20 (window size=14, 133.5ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -888,7 +888,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 15/20 (window size=15, 117.2ms) ---
+  --- message 15/20 (window size=15, 125.2ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -908,7 +908,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 16/20 (window size=16, 121.2ms) ---
+  --- message 16/20 (window size=16, 114.3ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -928,7 +928,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 17/20 (window size=17, 117.0ms) ---
+  --- message 17/20 (window size=17, 116.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -948,7 +948,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 18/20 (window size=18, 120.3ms) ---
+  --- message 18/20 (window size=18, 120.1ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -968,7 +968,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 19/20 (window size=19, 115.3ms) ---
+  --- message 19/20 (window size=19, 108.9ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -988,7 +988,7 @@ SCENARIO: 7. Cooperative perception poisoning (collusion)
   [Adapters] log=CAUTION api.status=CAUTION ds_mass={'m_A': 0.39203387500000003, 'm_not_A': 0.05296612500000003, 'm_Theta': 0.5549999999999999, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 20/20 (window size=20, 115.4ms) ---
+  --- message 20/20 (window size=20, 127.9ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -1014,7 +1014,7 @@ SCENARIO: 8. Semantic manipulation (real B3)
     [PASS] Input: messages list is non-empty  -- 1 message(s)
     [PASS] Input msg[0]: is a dict with expected top-level shape
 
-  --- message 1/1 (window size=1, 63.2ms) ---
+  --- message 1/1 (window size=1, 60.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
   [B1]     valid=True fatal=False score=1.000 reasons=[]
@@ -1040,10 +1040,10 @@ SCENARIO: 9. Prompt injection (real B3)
     [PASS] Input: messages list is non-empty  -- 1 message(s)
     [PASS] Input msg[0]: is a dict with expected top-level shape
 
-  --- message 1/1 (window size=1, 61.8ms) ---
+  --- message 1/1 (window size=1, 57.7ms) ---
   [PKI]    None
     [SKIP] PKI contract check -- layer did not run this scenario (None)
-  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 853372536.5 ms)']
+  [B1]     valid=False fatal=False score=0.800 reasons=['Timestamp stale (age 865086132.0 ms)']
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
   [MBD]    passed=True anomaly_score=0.000 replay=0.00 sybil=0.00 collusion=0.00 kinematic=1.00
     [PASS] MBD (MBDResult) interface contract: has all required keys  -- keys present: ['anomaly_score', 'boundary', 'collusion_score', 'evidence', 'kinematic_score', 'passed', 'replay_score', 'sybil_score', 'temporal_consistency']
@@ -1218,8 +1218,8 @@ SCENARIO: FLAGSHIP Stage 1: Coordinated STBV execution
     [PASS] Input msg[2]: is a dict with expected top-level shape
     [PASS] Input msg[3]: is a dict with expected top-level shape
 
-  --- message 1/4 (window size=1, 69.7ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '02cbd3ba-29ec-461e-8b4c-fdeba0e058f6', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+  --- message 1/4 (window size=1, 67.4ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '7bbc05bc-e30e-4019-9a04-dd4aa83099a4', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
   [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
@@ -1238,8 +1238,8 @@ SCENARIO: FLAGSHIP Stage 1: Coordinated STBV execution
   [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 2/4 (window size=2, 88.4ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '02cbd3ba-29ec-461e-8b4c-fdeba0e058f6', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+  --- message 2/4 (window size=2, 187.0ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '7bbc05bc-e30e-4019-9a04-dd4aa83099a4', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
   [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
@@ -1258,8 +1258,8 @@ SCENARIO: FLAGSHIP Stage 1: Coordinated STBV execution
   [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 3/4 (window size=3, 114.9ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '02cbd3ba-29ec-461e-8b4c-fdeba0e058f6', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+  --- message 3/4 (window size=3, 125.6ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '7bbc05bc-e30e-4019-9a04-dd4aa83099a4', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
   [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']
@@ -1278,8 +1278,8 @@ SCENARIO: FLAGSHIP Stage 1: Coordinated STBV execution
   [Adapters] log=REJECT api.status=REJECT ds_mass={'m_A': 0.0, 'm_not_A': 1.0, 'm_Theta': 0.0, 'origin_module': 'trust_engine'}
     [PASS] DS MASS: masses sum to 1.0  -- sum=1.000000
 
-  --- message 4/4 (window size=4, 124.7ms) ---
-  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '02cbd3ba-29ec-461e-8b4c-fdeba0e058f6', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
+  --- message 4/4 (window size=4, 107.7ms) ---
+  [PKI]    {'boundary': 'PKI', 'sender': 'station_9000', 'cert_id': '7bbc05bc-e30e-4019-9a04-dd4aa83099a4', 'cert_valid': True, 'sig_valid': True, 'pki_pass': True, 'revoked': False, 'compromised': False}
     [PASS] PKI interface contract: has all required keys  -- keys present: ['boundary', 'cert_id', 'cert_valid', 'compromised', 'pki_pass', 'revoked', 'sender', 'sig_valid']
   [B1]     valid=False fatal=True score=0.000 reasons=['Missing mandatory fields: station_id', "header.station_id: cannot convert 'str' to int"]
     [PASS] B1 (ValidationAssessment) interface contract: has all required keys  -- keys present: ['checks', 'confidence', 'details', 'fatal', 'reasons', 'score', 'valid']

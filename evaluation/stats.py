@@ -69,10 +69,25 @@ def mcnemar(preds_a: Sequence[bool], preds_b: Sequence[bool],
             chi2 = (abs(b - c) - 1) ** 2 / n_discordant
             p = float(1 - _scipy_stats.chi2.cdf(chi2, df=1))
             form = "chi-square with continuity correction"
-        return {"applicable": True, "b_only_A_correct": b, "c_only_B_correct": c,
-                "p_value": p, "form": form,
-                "warning": "very few discordant pairs; low power" if n_discordant < 10 else None}
-    return {"applicable": False, "reason": "scipy unavailable"}
+    else:
+        # Fallback to pure Python implementation using math library
+        if n_discordant < 25:
+            k_min = min(b, c)
+            # Two-sided binomial test p-value: sum of binomial probabilities
+            p = 2.0 * sum(math.comb(n_discordant, k) for k in range(k_min + 1)) * (0.5 ** n_discordant)
+            p = float(min(p, 1.0))
+            form = "exact binomial (discordant<25, pure python)"
+        else:
+            chi2 = (abs(b - c) - 1) ** 2 / n_discordant
+            # For df=1, Chi2(x) is equivalent to standard normal Z^2.
+            # CDF(x) = erf(sqrt(x/2)). P-value = 1 - CDF = erfc(sqrt(x/2)).
+            p = float(math.erfc(math.sqrt(chi2 / 2.0)))
+            form = "chi-square with continuity correction (pure python)"
+
+    return {"applicable": True, "b_only_A_correct": b, "c_only_B_correct": c,
+            "p_value": p, "form": form,
+            "warning": "very few discordant pairs; low power" if n_discordant < 10 else None}
+
 
 
 def wilcoxon_signed_rank(a: Sequence[float], b: Sequence[float]) -> Dict:
@@ -127,3 +142,12 @@ def cohens_d_paired(a: Sequence[float], b: Sequence[float]) -> Dict:
     mag = ("negligible" if abs(d) < 0.2 else "small" if abs(d) < 0.5
            else "medium" if abs(d) < 0.8 else "large")
     return {"applicable": True, "cohens_d": d, "magnitude": mag, "n": len(a)}
+
+
+def cohens_h(p1: float, p2: float) -> float:
+    """Cohen's h effect size for two proportions.
+    h = 2 * arcsin(sqrt(p1)) - 2 * arcsin(sqrt(p2))
+    """
+    return 2.0 * math.asin(math.sqrt(max(0.0, min(1.0, p1)))) - \
+           2.0 * math.asin(math.sqrt(max(0.0, min(1.0, p2))))
+
