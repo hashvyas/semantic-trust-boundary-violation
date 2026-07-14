@@ -1096,11 +1096,15 @@ def main():
             # Form window of past messages matching time window
             window_size_ms = csia._window_size_ns / 1e6
             ts = _nested_get_any(msg, "cam.generation_delta_time")
+            if ts is None:
+                ts = msg.get("timestamp")
             current_ts = ts if isinstance(ts, (int, float)) else 0.0
 
             window = []
             for m in passed_messages:
                 m_ts = _nested_get_any(m, "cam.generation_delta_time")
+                if m_ts is None:
+                    m_ts = m.get("timestamp")
                 m_ts = m_ts if isinstance(m_ts, (int, float)) else 0.0
                 if abs(current_ts - m_ts) <= window_size_ms:
                     window.append(m)

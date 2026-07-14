@@ -96,6 +96,21 @@ def to_flat_report(
     would corrupt every MBD/CP score derived from it, which is worse
     than failing loudly here.
     """
+    if "x" in cam_message and "y" in cam_message:
+        speed_val = float(cam_message["speed"])
+        if cam_message.get("source") == "veremi":
+            speed_val *= 3.6
+        return {
+            "sender": cam_message.get("sender"),
+            "x": float(cam_message["x"]),
+            "y": float(cam_message["y"]),
+            "speed": speed_val,
+            "heading": float(cam_message["heading"]) % 360.0,
+            "timestamp": float(cam_message["timestamp"]),
+            "event": event or cam_message.get("event"),
+            "source": cam_message.get("source"),
+        }
+
     sender = _extract_field(cam_message, "header.station_id", "cam.station_id", "station_id")
     lat_raw = _extract_field(
         cam_message,
@@ -159,4 +174,5 @@ def to_flat_report(
         "heading": heading_deg % 360.0,
         "timestamp": float(timestamp),
         "event": event,
+        "source": cam_message.get("source"),
     }

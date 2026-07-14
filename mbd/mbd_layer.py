@@ -104,13 +104,22 @@ def speed_check(msg: Dict[str, Any]) -> bool:
     return 0 <= msg["speed"] <= MAX_SPEED_KMH
 
 
-def timestamp_check(msg: Dict[str, Any], max_age_sec: float = 5) -> bool:
+def timestamp_check(msg: Dict[str, Any], max_age_sec: float = 5, history_store: Optional[VehicleHistoryStore] = None) -> bool:
     ts = msg.get("timestamp", 0)
-    if ts < 1000:
-        return True
-    if ts > 1_000_000_000:
-        return True
-    return abs(ts - time.time()) <= max_age_sec
+    is_offline = 1000 <= ts <= 1_000_000_000
+    if is_offline:
+        if history_store is not None:
+            max_ts = max((h[-1]["timestamp"] for h in history_store._history.values() if h), default=ts)
+            ref_time = max(max_ts, ts)
+        else:
+            ref_time = ts
+        return (ref_time - ts) <= max_age_sec
+    else:
+        if ts < 1000:
+            return True
+        if ts > 1_000_000_000:
+            return True
+        return abs(ts - time.time()) <= max_age_sec
 
 
 def position_check(msg: Dict[str, Any], bound: float = 100_000) -> bool:
@@ -192,7 +201,7 @@ def mbd_layer(
 
     plausibility = {
         "speed_valid": speed_check(msg),
-        "timestamp_valid": timestamp_check(msg),
+        "timestamp_valid": timestamp_check(msg, history_store=history_store),
         "position_valid": position_check(msg),
         "heading_valid": heading_check(msg),
     }
@@ -233,33 +242,95 @@ def mbd_layer(
             evidence.append(f"Chronology violation: timestamp delta {dt} is non-positive.")
         else:
             ts = msg.get("timestamp", 0)
-            if ts < 1000 or ts > 1_000_000_000:
-                age_score = 1.0
-            else:
-                age = abs(ts - time.time())
+            is_offline = 1000 <= ts <= 1_000_000_000
+            if is_offline:
+                max_ts = max((h[-1]["timestamp"] for h in history_store._history.values() if h), default=ts)
+                age = max_ts - ts
                 age_score = max(0.0, 1.0 - age / 5.0)
+            else:
+                if ts < 1000 or ts > 1_000_000_000:
+                    age_score = 1.0
+                else:
+                    age = abs(ts - time.time())
+                    age_score = max(0.0, 1.0 - age / 5.0)
             temporal_consistency = round(age_score, 3)
 
+    # Replay check (Fix 3)
     replay_score = 0.0
     ts_now = msg.get("timestamp", 0)
-    for other_sender, other_history in history_store._history.items():
-        for prev_msg in other_history:
-            if (
-                prev_msg["x"] == msg["x"]
-                and prev_msg["y"] == msg["y"]
-                and prev_msg["speed"] == msg["speed"]
-                and prev_msg["heading"] == msg["heading"]
-            ):
-                if prev_msg["timestamp"] == ts_now and other_sender == sender_id:
+    msg_id = msg.get("messageID")
+    
+    # Check historical sender state for duplicate, delayed, and non-monotonic timestamps
+    if len(history) > 0:
+        prev_msg = history[-1]
+        prev_ts = prev_msg.get("timestamp", 0)
+        
+        # 1. Non-monotonic timestamp
+        if ts_now < prev_ts:
+            replay_score = 1.0
+            evidence.append(f"Replay check: Non-monotonic timestamp detected (current {ts_now} < previous {prev_ts}).")
+        
+        # 2. Duplicate timestamp + message ID
+        elif ts_now == prev_ts:
+            if msg_id is not None and prev_msg.get("messageID") == msg_id:
+                replay_score = 1.0
+                evidence.append(f"Replay check: Duplicate message ID {msg_id} and timestamp {ts_now} detected.")
+            else:
+                replay_score = 1.0
+                evidence.append(f"Replay check: Duplicate message timestamp {ts_now} detected.")
+        
+        # 3. Delayed packet relative to sender history
+        elif prev_ts - ts_now > 5.0:
+            replay_score = 1.0
+            evidence.append(f"Replay check: Delayed packet received (delay of {prev_ts - ts_now:.1f}s relative to sender history).")
+
+        # 3.1. Constant Position Attack Check (Fix 2)
+        # If the vehicle reports moving (reported speed > 5 km/h) but its position remains constant over consecutive messages.
+        # We check cumulative displacement from the first message in our history window.
+        if replay_score < 1.0:
+            first_msg = history[0]
+            cumulative_dt = ts_now - first_msg.get("timestamp", 0)
+            if cumulative_dt >= 1.0:
+                total_dx = msg["x"] - first_msg["x"]
+                total_dy = msg["y"] - first_msg["y"]
+                total_dist = (total_dx**2 + total_dy**2)**0.5
+                
+                # Calculate average reported speed in km/h across history
+                avg_reported_speed = sum(h["speed"] for h in history) / len(history)
+                
+                # If displacement is tiny (< 1.0 meter) but average reported speed indicates significant motion (> 5.0 km/h)
+                if total_dist < 1.0 and avg_reported_speed > 5.0:
                     replay_score = 1.0
-                    evidence.append("Replay check: Identical message duplicated/re-transmitted.")
-                    break
-                else:
-                    replay_score = max(replay_score, 0.9)
-                    evidence.append(f"Replay check: Identical payload matches past report from sender '{other_sender}'.")
-                    break
-        if replay_score == 1.0:
-            break
+                    evidence.append(f"Constant Position check: Vehicle reports movement (avg speed {avg_reported_speed:.2f} km/h) but displacement is only {total_dist:.2f}m over {cumulative_dt:.2f}s.")
+
+    # 4. Duplicate message ID and timestamp check across all history for this sender
+    if replay_score < 1.0 and msg_id is not None:
+        for prev_msg in history:
+            if prev_msg.get("messageID") == msg_id and prev_msg.get("timestamp") == ts_now:
+                replay_score = 1.0
+                evidence.append(f"Replay check: Duplicate message ID {msg_id} and timestamp {ts_now} detected in history.")
+                break
+                
+    # 5. Fallback to existing payload-based duplication check if not already flagged
+    if replay_score < 1.0:
+        for other_sender, other_history in history_store._history.items():
+            for prev_msg in other_history:
+                if (
+                    prev_msg["x"] == msg["x"]
+                    and prev_msg["y"] == msg["y"]
+                    and prev_msg["speed"] == msg["speed"]
+                    and prev_msg["heading"] == msg["heading"]
+                ):
+                    if prev_msg["timestamp"] == ts_now and other_sender == sender_id:
+                        replay_score = 1.0
+                        evidence.append("Replay check: Identical message duplicated/re-transmitted.")
+                        break
+                    else:
+                        replay_score = max(replay_score, 0.9)
+                        evidence.append(f"Replay check: Identical payload matches past report from sender '{other_sender}'.")
+                        break
+            if replay_score == 1.0:
+                break
 
     sybil_score = 0.0
     for other_sender, other_history in history_store._history.items():
@@ -315,7 +386,7 @@ def mbd_layer(
     if cert_score is not None and cert_score > 0:
         evidence.append("Certificate rotation: anomalous rotation rate flagged by B1's VehicleStateManager (delegated).")
 
-    passed = plausibility_pass and kinematics_ok
+    passed = plausibility_pass and kinematics_ok and (replay_score < 0.9)
 
     result = MBDResult(
         passed=passed,

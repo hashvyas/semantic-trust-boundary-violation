@@ -99,6 +99,10 @@ def cp_layer(
     individually. CP fuses them into one situational confidence score.
     observation_weights: sender_id -> float or {"weight": float}, from B2.
     """
+    # Detect if actual cooperative perception observations of a single target are available
+    # If the reports are just self-broadcasts (e.g. from VeReMi logs), CP observations are unavailable.
+    observations_available = (event_label is not None) and not any(r.get("source") == "veremi" for r in reports)
+
     if len(reports) == 0:
         return {
             "boundary": "CP",  # renamed from "B3_CP" -- see module docstring
@@ -113,6 +117,7 @@ def cp_layer(
             "fusion_confidence": 0.0,
             "cp_pass": False,
             "reports": [],
+            "observations_available": observations_available,
         }
 
     if observation_weights is not None:
@@ -125,18 +130,26 @@ def cp_layer(
     else:
         weights = None
 
-    spatial_score = spatial_consistency(reports, weights=weights)
-    speed_score = speed_consistency(reports, weights=weights)
-    heading_score = heading_consistency(reports, weights=weights)
-    diversity_score = source_diversity(reports, weights_dict=observation_weights)
+    if not observations_available:
+        # CP observations are unavailable -> propagate neutral/vacuous values
+        spatial_score = 1.0
+        speed_score = 1.0
+        heading_score = 1.0
+        diversity_score = 1.0
+        confidence = 1.0
+    else:
+        spatial_score = spatial_consistency(reports, weights=weights)
+        speed_score = speed_consistency(reports, weights=weights)
+        heading_score = heading_consistency(reports, weights=weights)
+        diversity_score = source_diversity(reports, weights_dict=observation_weights)
 
-    confidence = (
-        spatial_score * 0.35
-        + speed_score * 0.25
-        + heading_score * 0.20
-        + diversity_score * 0.20
-    )
-    confidence = round(float(confidence), 3)
+        confidence = (
+            spatial_score * 0.35
+            + speed_score * 0.25
+            + heading_score * 0.20
+            + diversity_score * 0.20
+        )
+        confidence = round(float(confidence), 3)
 
     return {
         "boundary": "CP",
@@ -149,6 +162,7 @@ def cp_layer(
         "diversity_score": float(diversity_score),
         "cp_confidence": confidence,
         "fusion_confidence": confidence,
-        "cp_pass": bool(confidence > 0.7),
+        "cp_pass": bool(confidence > 0.7) if observations_available else True,
         "reports": reports,
+        "observations_available": observations_available,
     }

@@ -90,7 +90,36 @@ def _find_ground_truth(input_dir: str) -> Tuple[Dict[Any, int], str]:
                 gt[key] = max(int(gt.get(key, 0)), int(atk))
         if gt:
             used.append(path)
+
+    if not gt:
+        # Fallback: parse attacker types from trace filenames
+        # e.g., traceJSON-10011-10009-A1-57501-15.json -> vehicle 10011 and 10009 are A1
+        log_patterns = ("**/traceJSONlog*", "**/*JSONlog*", "**/veins*", "**/*.json")
+        logs = []
+        for pat in log_patterns:
+            logs += glob.glob(os.path.join(input_dir, pat), recursive=True)
+        logs = sorted(set(p for p in logs if os.path.isfile(p) and "round" not in os.path.basename(p).lower()
+                          and "ground" not in os.path.basename(p).lower()))
+        for lp in logs:
+            basename = os.path.basename(lp)
+            parts = basename.split("-")
+            atk_val = None
+            atk_idx = -1
+            for idx, part in enumerate(parts):
+                if part.startswith("A") and part[1:].isdigit():
+                    atk_val = int(part[1:])
+                    atk_idx = idx
+                    break
+            if atk_val is not None and atk_idx > 1:
+                for i in range(1, atk_idx):
+                    if parts[i].isdigit():
+                        gt[int(parts[i])] = atk_val
+                        gt[parts[i]] = atk_val
+        if gt:
+            used = ["parsed from trace filenames"]
+
     return gt, (f"{len(gt)} senders from {used}" if gt else "none found")
+
 
 
 def _num(x, default=0.0):
@@ -214,15 +243,36 @@ def main() -> int:
         return 4
 
     out = pathlib.Path(args.output); out.mkdir(parents=True, exist_ok=True)
-    written = skipped = 0
+    written = skipped = duplicates_removed = 0
+    seen_transmissions = set()
     skip_reasons = Counter()
     label_counter = Counter()
     all_reports: List[Dict[str, Any]] = []
+    
+    # We want to count raw records processed (written + skipped + duplicates)
+    raw_records_processed = 0
+    
     for lp in logs:
         for rec in _iter_json_lines(lp):
+            raw_records_processed += 1
             r, note = _extract(rec, gt)
             if r is None:
                 skipped += 1; skip_reasons[note] += 1; continue
+                
+            sender = r["sender"]
+            msg_id = rec.get("messageID")
+            send_time = rec.get("sendTime", rec.get("time", r["timestamp"]))
+            
+            if msg_id is not None:
+                tx_key = (sender, msg_id)
+            else:
+                tx_key = (sender, round(_num(send_time), 3))
+                
+            if tx_key in seen_transmissions:
+                duplicates_removed += 1
+                continue
+                
+            seen_transmissions.add(tx_key)
             all_reports.append(r); label_counter[int(r["is_attacker"])] += 1
             written += 1
             if args.max and written >= args.max:
@@ -237,6 +287,8 @@ def main() -> int:
                  "Kamel et al., VeReMi Extension, IEEE ICC 2020"],
         "source_url": "https://veremi-dataset.github.io",
         "input_dir": os.path.abspath(args.input),
+        "raw_records_processed": raw_records_processed,
+        "duplicate_observations_removed": duplicates_removed,
         "messages_written": written,
         "messages_skipped": skipped,
         "skip_reasons": dict(skip_reasons),
@@ -246,7 +298,9 @@ def main() -> int:
         "VALIDATE": "Confirm field mapping with --inspect before trusting these labels.",
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2))
-    print(f"\n[done] wrote {written} messages ({label_counter[1]} attacker / {label_counter[0]} genuine)")
+    print(f"\n[done] processed {raw_records_processed} raw records:")
+    print(f"       - Removed {duplicates_removed} duplicate receiver observations")
+    print(f"       - Kept {written} unique transmitted packets ({label_counter[1]} attacker / {label_counter[0]} genuine)")
     print(f"       -> {out/'veremi_flat_reports.json'}")
     print(f"       -> {out/'manifest.json'}")
     if skipped:

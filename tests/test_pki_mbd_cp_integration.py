@@ -58,7 +58,7 @@ check("D4: no stray cp.py exists anywhere in the repo (only cp/cp_layer.py)",
 for pkg, forbidden in [("pki", "B1_PKI"), ("mbd", "B2_MBD"), ("cp", "B3_CP")]:
     hits = []
     for f in (ROOT / pkg).glob("*.py"):
-        text = f.read_text()
+        text = f.read_text(encoding="utf-8")
         # Only flag it as a live string literal, not a docstring reference
         # explaining the rename (those intentionally mention the old name).
         if f'"{forbidden}"' in text or f"'{forbidden}'" in text:
@@ -77,7 +77,7 @@ for pkg, forbidden in [("pki", "B1_PKI"), ("mbd", "B2_MBD"), ("cp", "B3_CP")]:
 # D3: B1 must never import/reference MBD's VehicleHistoryStore
 # (mechanically enforced, not just documented)
 # ============================================================
-b1_source = (ROOT / "b1_scsv" / "scsv.py").read_text()
+b1_source = (ROOT / "b1_scsv" / "scsv.py").read_text(encoding="utf-8")
 tree = ast.parse(b1_source)
 imported_names = []
 for node in ast.walk(tree):

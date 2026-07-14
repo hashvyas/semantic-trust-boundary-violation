@@ -183,6 +183,14 @@ class TrustDecisionEngine:
         else:
             crypto_level_alone = TrustLevel.ACCEPT
 
+        # Floor rule: if any upstream validation failed (excluding pure stale timestamps), the decision must be at least CAUTION
+        if not explainability_report.get("validation_valid", True) or not b1_valid:
+            reasons = validation_assessment.get("reasons") or []
+            is_only_stale_ts = len(reasons) == 1 and any("stale" in r.lower() or "timestamp" in r.lower() for r in reasons)
+            if not is_only_stale_ts:
+                if crypto_level_alone == TrustLevel.ACCEPT:
+                    crypto_level_alone = TrustLevel.CAUTION
+
         if trust_score < self.policy.cryptographic_reject_below:
             fused_level = TrustLevel.REJECT
         elif trust_score < self.policy.cryptographic_caution_below:

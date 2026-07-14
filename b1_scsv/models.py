@@ -389,7 +389,27 @@ def safe_parse_cam(raw: Any) -> Tuple[Optional[CamMessage], Optional[str]]:
     if not isinstance(raw, dict):
         return None, f"expected dict, got {type(raw).__name__}"
 
+    if "x" in raw and "y" in raw and "sender" in raw:
+        return CamMessage(
+            raw=raw,
+            station_id=int(raw["sender"]),
+            message_id=1,
+            station_type=5,
+            timestamp=float(raw["timestamp"]),
+            latitude=float(raw["y"]),
+            longitude=float(raw["x"]),
+            speed=float(raw["speed"]),
+            heading=float(raw["heading"]),
+            yaw_rate=0.0,
+            longitudinal_acceleration=0.0,
+            lateral_acceleration=0.0,
+            steering_wheel_angle=0.0,
+            certificate_id=f"CERT_{raw.get('sender')}",
+            parse_warnings=[],
+        ), None
+
     warnings: List[str] = []
+
 
     # ── Header ────────────────────────────────────────────────────────────
     header = raw.get("header") or {}
