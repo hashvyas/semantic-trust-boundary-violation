@@ -1,0 +1,342 @@
+{
+  "mode": "sensitivity",
+  "WARNING": "NOT a measurement of B3; simulated p-distributions",
+  "rows": [
+    {
+      "mu_attack": 0.3,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.288,
+      "legacy": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.014,
+        "ece_final": 0.4940508639395819
+      },
+      "continuous": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.014,
+        "ece_final": 0.39157399153047817
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 nan->nan, FPR 0.000->0.000, latency 18.2->15.0 us"
+    },
+    {
+      "mu_attack": 0.3,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.272,
+      "legacy": {
+        "f1": 0.00796812749003984,
+        "fp": 0,
+        "fn": 498,
+        "fpr": 0.0,
+        "caution_rate": 0.089,
+        "ece_final": 0.469909719326105
+      },
+      "continuous": {
+        "f1": 0.00796812749003984,
+        "fp": 0,
+        "fn": 498,
+        "fpr": 0.0,
+        "caution_rate": 0.089,
+        "ece_final": 0.3849000135765594
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.008->0.008, FPR 0.000->0.000, latency 20.6->18.0 us"
+    },
+    {
+      "mu_attack": 0.4,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.494,
+      "legacy": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.083,
+        "ece_final": 0.4740443818994638
+      },
+      "continuous": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.083,
+        "ece_final": 0.3865933454887008
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 nan->nan, FPR 0.000->0.000, latency 18.6->14.5 us"
+    },
+    {
+      "mu_attack": 0.4,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.306,
+      "legacy": {
+        "f1": 0.019801980198019802,
+        "fp": 0,
+        "fn": 495,
+        "fpr": 0.0,
+        "caution_rate": 0.155,
+        "ece_final": 0.446561664355616
+      },
+      "continuous": {
+        "f1": 0.019801980198019802,
+        "fp": 0,
+        "fn": 495,
+        "fpr": 0.0,
+        "caution_rate": 0.155,
+        "ece_final": 0.36073329084917827
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.020->0.020, FPR 0.000->0.000, latency 15.5->15.1 us"
+    },
+    {
+      "mu_attack": 0.45,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.526,
+      "legacy": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.16,
+        "ece_final": 0.4511245447582149
+      },
+      "continuous": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.16,
+        "ece_final": 0.38848227376772754
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 nan->nan, FPR 0.000->0.000, latency 17.4->17.7 us"
+    },
+    {
+      "mu_attack": 0.45,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.262,
+      "legacy": {
+        "f1": 0.06576402321083172,
+        "fp": 0,
+        "fn": 483,
+        "fpr": 0.0,
+        "caution_rate": 0.218,
+        "ece_final": 0.4200950315883436
+      },
+      "continuous": {
+        "f1": 0.06576402321083172,
+        "fp": 0,
+        "fn": 483,
+        "fpr": 0.0,
+        "caution_rate": 0.218,
+        "ece_final": 0.34839352121798445
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.066->0.066, FPR 0.000->0.000, latency 16.2->17.8 us"
+    },
+    {
+      "mu_attack": 0.5,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.436,
+      "legacy": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.255,
+        "ece_final": 0.4221568766415774
+      },
+      "continuous": {
+        "f1": NaN,
+        "fp": 0,
+        "fn": 500,
+        "fpr": 0.0,
+        "caution_rate": 0.255,
+        "ece_final": 0.3732653708052516
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 nan->nan, FPR 0.000->0.000, latency 15.6->16.1 us"
+    },
+    {
+      "mu_attack": 0.5,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.27,
+      "legacy": {
+        "f1": 0.07321772639691715,
+        "fp": 0,
+        "fn": 481,
+        "fpr": 0.0,
+        "caution_rate": 0.257,
+        "ece_final": 0.4057421316331036
+      },
+      "continuous": {
+        "f1": 0.07321772639691715,
+        "fp": 0,
+        "fn": 481,
+        "fpr": 0.0,
+        "caution_rate": 0.257,
+        "ece_final": 0.33427422645568594
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.073->0.073, FPR 0.000->0.000, latency 17.4->14.7 us"
+    },
+    {
+      "mu_attack": 0.6,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.168,
+      "legacy": {
+        "f1": 0.00796812749003984,
+        "fp": 0,
+        "fn": 498,
+        "fpr": 0.0,
+        "caution_rate": 0.408,
+        "ece_final": 0.3675579435301161
+      },
+      "continuous": {
+        "f1": 0.00796812749003984,
+        "fp": 0,
+        "fn": 498,
+        "fpr": 0.0,
+        "caution_rate": 0.408,
+        "ece_final": 0.3631804851587527
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.008->0.008, FPR 0.000->0.000, latency 16.0->16.1 us"
+    },
+    {
+      "mu_attack": 0.6,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.186,
+      "legacy": {
+        "f1": 0.2046678635547576,
+        "fp": 0,
+        "fn": 443,
+        "fpr": 0.0,
+        "caution_rate": 0.307,
+        "ece_final": 0.36840539354914603
+      },
+      "continuous": {
+        "f1": 0.2046678635547576,
+        "fp": 0,
+        "fn": 443,
+        "fpr": 0.0,
+        "caution_rate": 0.307,
+        "ece_final": 0.3092625437602264
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.205->0.205, FPR 0.000->0.000, latency 15.6->14.8 us"
+    },
+    {
+      "mu_attack": 0.75,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.006,
+      "legacy": {
+        "f1": 0.2425307557117751,
+        "fp": 0,
+        "fn": 431,
+        "fpr": 0.0,
+        "caution_rate": 0.428,
+        "ece_final": 0.30789454855586385
+      },
+      "continuous": {
+        "f1": 0.2425307557117751,
+        "fp": 0,
+        "fn": 431,
+        "fpr": 0.0,
+        "caution_rate": 0.428,
+        "ece_final": 0.3428666532442525
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.243->0.243, FPR 0.000->0.000, latency 15.7->17.3 us"
+    },
+    {
+      "mu_attack": 0.75,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.09,
+      "legacy": {
+        "f1": 0.46860643185298617,
+        "fp": 0,
+        "fn": 347,
+        "fpr": 0.0,
+        "caution_rate": 0.312,
+        "ece_final": 0.3166381909346703
+      },
+      "continuous": {
+        "f1": 0.46860643185298617,
+        "fp": 0,
+        "fn": 347,
+        "fpr": 0.0,
+        "caution_rate": 0.312,
+        "ece_final": 0.2976188831138645
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.469->0.469, FPR 0.000->0.000, latency 16.4->14.8 us"
+    },
+    {
+      "mu_attack": 0.9,
+      "sigma": 0.1,
+      "dead_zone_occupancy_attacks": 0.0,
+      "legacy": {
+        "f1": 0.8165680473372781,
+        "fp": 0,
+        "fn": 155,
+        "fpr": 0.0,
+        "caution_rate": 0.155,
+        "ece_final": 0.2736583499772594
+      },
+      "continuous": {
+        "f1": 0.8165680473372781,
+        "fp": 0,
+        "fn": 155,
+        "fpr": 0.0,
+        "caution_rate": 0.155,
+        "ece_final": 0.3067569880227066
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.817->0.817, FPR 0.000->0.000, latency 18.9->15.9 us"
+    },
+    {
+      "mu_attack": 0.9,
+      "sigma": 0.2,
+      "dead_zone_occupancy_attacks": 0.02,
+      "legacy": {
+        "f1": 0.7357774968394437,
+        "fp": 0,
+        "fn": 209,
+        "fpr": 0.0,
+        "caution_rate": 0.224,
+        "ece_final": 0.2768386253270413
+      },
+      "continuous": {
+        "f1": 0.7357774968394437,
+        "fp": 0,
+        "fn": 209,
+        "fpr": 0.0,
+        "caution_rate": 0.224,
+        "ece_final": 0.3004542007239081
+      },
+      "mcnemar_p": null,
+      "adopt": false,
+      "why": "significant=False (p=None), F1 0.736->0.736, FPR 0.000->0.000, latency 15.6->18.6 us"
+    }
+  ]
+}

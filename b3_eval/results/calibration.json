@@ -1,26 +1,26 @@
 {
   "manifest": {
     "experiment": "b3_calibration",
-    "timestamp_utc": "2026-07-13T10:03:50Z",
+    "timestamp_utc": "2026-07-13T19:08:32Z",
     "checkpoint": {
       "ok": true,
-      "path": "C:\\semantic-trust-boundary-violation\\b3\\solution_stb\\b3_semantic_gate\\model\\semantic_gate_v3\\pytorch_model.bin",
+      "path": "/mnt/c/Users/mukil/Downloads/stbv_engine/b3/solution_stb/b3_semantic_gate/model/semantic_gate_v3/pytorch_model.bin",
       "size_bytes": 567622450,
       "sha256_16": "9ee7475e08f76ce6"
     },
     "torch": {
       "ok": true,
-      "version": "2.6.0+cu124",
+      "version": "2.13.0+cu130",
       "cuda": true,
-      "device_name": "NVIDIA GeForce RTX 3050 Laptop GPU"
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU"
     },
-    "python": "3.12.10",
-    "platform": "Windows 11 AMD64"
+    "python": "3.12.3",
+    "platform": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64"
   },
   "n": 85,
   "before": {
-    "ece": 0.06186258270739682,
-    "brier": 0.06130163930545887,
+    "ece": 0.061862554357311056,
+    "brier": 0.06130160937897184,
     "reliability": [
       null,
       null,
@@ -28,7 +28,7 @@
       null,
       null,
       {
-        "avg_conf": 0.5373056003148966,
+        "avg_conf": 0.5373041754511882,
         "accuracy": 0.0,
         "count": 1
       },
@@ -36,7 +36,7 @@
       null,
       null,
       {
-        "avg_conf": 0.9966787372596885,
+        "avg_conf": 0.9966787255347649,
         "accuracy": 0.9404761904761905,
         "count": 84
       }
@@ -44,8 +44,8 @@
   },
   "temperature": 2.144598003491752,
   "after": {
-    "ece": 0.027956219207289416,
-    "brier": 0.055293225619415846,
+    "ece": 0.02795620013631494,
+    "brier": 0.05529318807477248,
     "reliability": [
       null,
       null,
@@ -53,23 +53,23 @@
       null,
       null,
       {
-        "avg_conf": 0.5174204811598005,
+        "avg_conf": 0.5174198138550042,
         "accuracy": 0.0,
         "count": 1
       },
       null,
       {
-        "avg_conf": 0.7797011837374404,
+        "avg_conf": 0.7797005058409465,
         "accuracy": 1.0,
         "count": 1
       },
       {
-        "avg_conf": 0.8709492618281369,
+        "avg_conf": 0.8709489944878581,
         "accuracy": 0.6666666666666666,
         "count": 6
       },
       {
-        "avg_conf": 0.9556770939710595,
+        "avg_conf": 0.9556770943292784,
         "accuracy": 0.961038961038961,
         "count": 77
       }

@@ -1,0 +1,457 @@
+{
+  "grid_points": 1020,
+  "differing": 64,
+  "legacy_more_conservative": 50,
+  "continuous_more_conservative": 14,
+  "clean_crypto_differing": 0,
+  "rows": [
+    {
+      "b1_score": 0.4,
+      "p_malicious": 0.5,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.4,
+      "p_malicious": 0.52,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.4,
+      "p_malicious": 0.54,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.4,
+      "p_malicious": 0.56,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.4,
+      "p_malicious": 0.58,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.4,
+      "p_malicious": 0.6,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.5,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.52,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.54,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.56,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.58,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.6,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.62,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.45,
+      "p_malicious": 0.64,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.5,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.52,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.54,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.56,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.58,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.6,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.62,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.64,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.66,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.68,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.5,
+      "p_malicious": 0.7,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.54,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.56,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.58,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.6,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.62,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.64,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.66,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.68,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.7,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.72,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.55,
+      "p_malicious": 0.74,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.66,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.68,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.7,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.72,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.74,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.76,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.78,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.6,
+      "p_malicious": 0.8,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.65,
+      "p_malicious": 0.76,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.65,
+      "p_malicious": 0.78,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.65,
+      "p_malicious": 0.8,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.65,
+      "p_malicious": 0.82,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.65,
+      "p_malicious": 0.84,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.7,
+      "p_malicious": 0.84,
+      "legacy": "REJECT",
+      "continuous": "CAUTION",
+      "more_conservative": "legacy"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.36,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.38,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.4,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.42,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.44,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.46,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.75,
+      "p_malicious": 0.48,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.8,
+      "p_malicious": 0.4,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.8,
+      "p_malicious": 0.42,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.8,
+      "p_malicious": 0.44,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.8,
+      "p_malicious": 0.46,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.8,
+      "p_malicious": 0.48,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.85,
+      "p_malicious": 0.46,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    },
+    {
+      "b1_score": 0.85,
+      "p_malicious": 0.48,
+      "legacy": "ACCEPT",
+      "continuous": "CAUTION",
+      "more_conservative": "continuous"
+    }
+  ]
+}

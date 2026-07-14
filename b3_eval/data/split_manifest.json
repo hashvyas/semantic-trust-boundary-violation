@@ -1,0 +1,38 @@
+{
+  "artifact": "REGENERATED benchmark split for run_model_benchmark.py",
+  "IS_NOT": "B3's original training corpus (unrecoverable; verified by exhaustive search).",
+  "text_source": "pipeline synthesized scene text (result['synthesized_message']['text']) -- the SAME text B3 classifies, matching semantic_attack_evaluation.py L138. This ensures the model comparison is apples-to-apples.",
+  "generated_by": "semantic_evaluation.semantic_attack_generator.generate_corpus + pipeline.orchestrator.ISCEPipeline synthesizer",
+  "seed": 20260713,
+  "test_frac": 0.2,
+  "raw_expected_label_distribution": {
+    "MALICIOUS": 105,
+    "BENIGN": 15
+  },
+  "label_mapping": {
+    "BENIGN": 0,
+    "MALICIOUS": 1
+  },
+  "exact_duplicate_texts_removed": 0,
+  "records_skipped_ambiguous_label": 0,
+  "ambiguous_label_values": {},
+  "records_skipped_empty_text": 0,
+  "pipeline_errors": 0,
+  "train": {
+    "n": 96,
+    "malicious": 84,
+    "benign": 12
+  },
+  "test": {
+    "n": 24,
+    "malicious": 21,
+    "benign": 3
+  },
+  "train_sha256_16": "49d10e58a4c8597b",
+  "test_sha256_16": "ed9a73505c4d12bc",
+  "paper_caveats": [
+    "Newly generated split; NOT B3's training data.",
+    "Report freshly-trained comparison models as the PRIMARY controlled comparison.",
+    "Report B3 on this split WITH the caveat that overlap with its unavailable original training corpus cannot be excluded (B3 may have seen similar text)."
+  ]
+}

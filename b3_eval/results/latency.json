@@ -1,0 +1,68 @@
+{
+  "manifest": {
+    "experiment": "b3_latency",
+    "timestamp_utc": "2026-07-13T09:27:46Z",
+    "checkpoint": {
+      "ok": true,
+      "path": "/mnt/c/Users/mukil/Downloads/stbv_engine/b3/solution_stb/b3_semantic_gate/model/semantic_gate_v3/pytorch_model.bin",
+      "size_bytes": 567622450,
+      "sha256_16": "9ee7475e08f76ce6"
+    },
+    "torch": {
+      "ok": true,
+      "version": "2.13.0+cu130",
+      "cuda": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU"
+    },
+    "python": "3.12.3",
+    "platform": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64"
+  },
+  "device": "cuda",
+  "cold_start_ms": 104219.73781999986,
+  "warm_start_ms": 5075.789586999235,
+  "memory": {
+    "parameters": 141896450,
+    "peak_vram_mb": 813.4528,
+    "peak_host_rss_mb": 1427.47265625
+  },
+  "single_inference_ms": {
+    "p50": 20.317224999416794,
+    "p90": 29.44600039991201,
+    "p95": 32.99980110068645,
+    "p99": 41.49370308014111,
+    "mean": 21.751737580061672,
+    "max": 45.26454000006197
+  },
+  "batch": {
+    "1": {
+      "batch_ms_mean": 23.687268199955724,
+      "per_item_ms": 23.687268199955724,
+      "throughput_items_per_s": 42.21677196198881
+    },
+    "2": {
+      "batch_ms_mean": 22.618522499942628,
+      "per_item_ms": 11.309261249971314,
+      "throughput_items_per_s": 88.42310544400382
+    },
+    "4": {
+      "batch_ms_mean": 24.665540199748648,
+      "per_item_ms": 6.166385049937162,
+      "throughput_items_per_s": 162.16956805352115
+    },
+    "8": {
+      "batch_ms_mean": 22.90141580006093,
+      "per_item_ms": 2.8626769750076164,
+      "throughput_items_per_s": 349.32338113256367
+    },
+    "16": {
+      "batch_ms_mean": 37.6184317005027,
+      "per_item_ms": 2.3511519812814186,
+      "throughput_items_per_s": 425.32341931166127
+    },
+    "32": {
+      "batch_ms_mean": 69.70985520001705,
+      "per_item_ms": 2.1784329750005327,
+      "throughput_items_per_s": 459.0455669170889
+    }
+  }
+}

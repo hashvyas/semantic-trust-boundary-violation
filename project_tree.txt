@@ -1,0 +1,946 @@
+.
+├── .gitattributes
+├── .github
+│   └── workflows
+│       └── ci.yml
+├── .gitignore
+├── ARCHITECTURE_DECISIONS.md
+├── AUDIT_REPORT.md
+├── B3_ASSESSMENT.md
+├── CHANGELOG.md
+├── INTEGRATION_README.md
+├── INTERFACE_COMPARISON.md
+├── LITERATURE_AND_DATASETS.md
+├── MIGRATION_REPORT.md
+├── PAPER_READINESS_CRITIQUE.md
+├── README.md
+├── TEAM_ONBOARDING.md
+├── UNKNOWN_ABSTAIN_DETERMINATION.md
+├── adapters
+│   ├── __init__.py
+│   ├── api_adapter.py
+│   ├── base.py
+│   ├── ds_mass_adapter.py
+│   └── logging_adapter.py
+├── b1_bad_actors.json
+├── b1_scsv
+│   ├── __init__.py
+│   ├── config.py
+│   ├── models.py
+│   ├── scsv.py
+│   ├── test_b1_limitations.py
+│   ├── test_b1_v2.py
+│   ├── test_bad_actors.py
+│   ├── test_scsv.py
+│   └── test_validation_architecture.py
+├── b1_stress_test_batch.json
+├── b2_csia
+│   ├── __init__.py
+│   ├── adaptive_thresholds.py
+│   ├── behavior_profile.py
+│   ├── behavior_reasoning.py
+│   ├── benchmarking.py
+│   ├── config.py
+│   ├── context_aware.py
+│   ├── csia.py
+│   ├── evidence_extractors.py
+│   ├── evidence_quality.py
+│   ├── experimental.py
+│   ├── models.py
+│   ├── observability_graph.py
+│   ├── test_b2_v2.py
+│   ├── test_csia.py
+│   ├── test_explainability.py
+│   ├── test_research_draft.py
+│   ├── trust_propagation.py
+│   └── uncertainty.py
+├── b2_explain
+│   ├── __init__.py
+│   ├── config.py
+│   ├── evidence.py
+│   ├── explainability.py
+│   └── models.py
+├── b3
+│   └── solution_stb
+│       └── b3_semantic_gate
+│           ├── error_analysis.py
+│           ├── inference.py
+│           ├── model
+│           │   └── semantic_gate_v3
+│           │       ├── added_tokens.json
+│           │       ├── config.json
+│           │       ├── pytorch_model.bin
+│           │       ├── special_tokens_map.json
+│           │       ├── spm.model
+│           │       ├── tokenizer.json
+│           │       ├── tokenizer_config.json
+│           │       └── training_args.bin
+│           ├── new_qualitative_test.py
+│           └── verify_cases_1_4.py
+├── b3_comparison_bubblegumpurple_1783924137.json
+├── b3_eval
+│   ├── README.md
+│   ├── _harness.py
+│   ├── data
+│   ├── results
+│   │   ├── calibration.json
+│   │   ├── latency.json
+│   │   ├── model_benchmark.json
+│   │   ├── open_set_analysis.json
+│   │   └── robustness.json
+│   ├── run_calibration.py
+│   ├── run_latency.py
+│   ├── run_model_benchmark.py
+│   ├── run_open_set_analysis.py
+│   └── run_robustness.py
+├── b3_interface.py
+├── bridges
+│   ├── __init__.py
+│   └── message_adapter.py
+├── compare_b3_models.py
+├── contracts
+│   ├── __init__.py
+│   └── trust_evidence.py
+├── cp
+│   ├── __init__.py
+│   └── cp_layer.py
+├── data
+│   ├── real_cam_samples.json
+│   └── v1
+│       ├── baseline_metrics.json
+│       ├── dataset_metadata.json
+│       ├── fused_b2_b1_output.json
+│       ├── raw_dataset.json
+│       ├── test.json
+│       ├── train.json
+│       └── val.json
+├── diagnose_b3_latency.py
+├── diagnose_b3_warmup_curve.py
+├── evaluation
+│   ├── README.md
+│   ├── __init__.py
+│   ├── manifest.py
+│   ├── metrics_and_outputs.py
+│   ├── run_experiments.py
+│   ├── run_interface_comparison.py
+│   ├── runner.py
+│   └── stats.py
+├── extract_stress_batch.py
+├── harness_documentation.md
+├── isce_config.yaml
+├── large_scale
+│   ├── README.md
+│   ├── __init__.py
+│   ├── reporting.py
+│   ├── run_large_scale.py
+│   ├── scaling.py
+│   └── semantic_attacks.py
+├── manual_pipeline_test.py
+├── mbd
+│   ├── __init__.py
+│   └── mbd_layer.py
+├── pipeline
+│   ├── __init__.py
+│   ├── a2_validation.py
+│   ├── b3_bridge.py
+│   ├── fusion.py
+│   ├── leakage_validator.py
+│   ├── orchestrator.py
+│   ├── synthesizer.py
+│   └── tests
+│       ├── __init__.py
+│       ├── test_b2_multi_seed.py
+│       ├── test_b3_integration.py
+│       ├── test_b5_generator.py
+│       ├── test_b6_templates.py
+│       └── test_synthesizer_leakage.py
+├── pki
+│   ├── __init__.py
+│   └── pki_layer.py
+├── project_tree.txt
+├── requirements.txt
+├── results
+│   ├── interface_comparison
+│   │   ├── decision_difference_map.json
+│   │   └── interface_sensitivity.json
+│   ├── large_scale
+│   │   ├── 20260713-080654
+│   │   │   ├── FINAL_REPORT.md
+│   │   │   ├── manifest.json
+│   │   │   ├── metrics_by_family.csv
+│   │   │   ├── metrics_by_family.tex
+│   │   │   ├── per_message.csv
+│   │   │   ├── per_scenario.csv
+│   │   │   ├── plots
+│   │   │   │   ├── belief_mass_distribution.png
+│   │   │   │   ├── confusion_full.png
+│   │   │   │   ├── curves_full
+│   │   │   │   │   ├── pr.png
+│   │   │   │   │   └── roc.png
+│   │   │   │   ├── detection_vs_attacker_pct.png
+│   │   │   │   ├── latency_hist.png
+│   │   │   │   ├── throughput_by_vehicle_count.png
+│   │   │   │   └── trust_score_distribution.png
+│   │   │   ├── resource_usage.json
+│   │   │   ├── summary.json
+│   │   │   └── sweep_results.csv
+│   │   ├── 20260713-093707
+│   │   │   ├── FINAL_REPORT.md
+│   │   │   ├── manifest.json
+│   │   │   ├── metrics_by_family.csv
+│   │   │   ├── metrics_by_family.tex
+│   │   │   ├── per_message.csv
+│   │   │   ├── per_scenario.csv
+│   │   │   ├── plots
+│   │   │   │   ├── belief_mass_distribution.png
+│   │   │   │   ├── confusion_full.png
+│   │   │   │   ├── curves_full
+│   │   │   │   │   ├── pr.png
+│   │   │   │   │   └── roc.png
+│   │   │   │   ├── detection_vs_attacker_pct.png
+│   │   │   │   ├── latency_hist.png
+│   │   │   │   ├── throughput_by_vehicle_count.png
+│   │   │   │   └── trust_score_distribution.png
+│   │   │   ├── resource_usage.json
+│   │   │   ├── summary.json
+│   │   │   └── sweep_results.csv
+│   │   └── 20260713-105013
+│   │       ├── FINAL_REPORT.md
+│   │       ├── manifest.json
+│   │       ├── metrics_by_family.csv
+│   │       ├── metrics_by_family.tex
+│   │       ├── per_message.csv
+│   │       ├── per_scenario.csv
+│   │       ├── plots
+│   │       │   ├── belief_mass_distribution.png
+│   │       │   ├── confusion_full.png
+│   │       │   ├── curves_full
+│   │       │   │   ├── pr.png
+│   │       │   │   └── roc.png
+│   │       │   ├── detection_vs_attacker_pct.png
+│   │       │   ├── latency_hist.png
+│   │       │   ├── throughput_by_vehicle_count.png
+│   │       │   └── trust_score_distribution.png
+│   │       ├── resource_usage.json
+│   │       ├── summary.json
+│   │       └── sweep_results.csv
+│   └── semantic
+│       ├── 20260713-142540
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-142931
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-143333
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-143430
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-143639
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-143904
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-144020
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       ├── 20260713-144921
+│       │   ├── latex
+│       │   │   ├── main_results_table.tex
+│       │   │   ├── per_category_table.tex
+│       │   │   └── statistical_tests_table.tex
+│       │   ├── metrics_per_category.csv
+│       │   ├── metrics_summary.json
+│       │   ├── plots
+│       │   │   ├── ablation_waterfall.pdf
+│       │   │   ├── ablation_waterfall.png
+│       │   │   ├── calibration_reliability.pdf
+│       │   │   ├── calibration_reliability.png
+│       │   │   ├── confidence_distribution.pdf
+│       │   │   ├── confidence_distribution.png
+│       │   │   ├── confusion_matrix.pdf
+│       │   │   ├── confusion_matrix.png
+│       │   │   ├── detection_by_category.pdf
+│       │   │   ├── detection_by_category.png
+│       │   │   ├── latency_distribution.pdf
+│       │   │   ├── latency_distribution.png
+│       │   │   ├── pr_curve.pdf
+│       │   │   ├── pr_curve.png
+│       │   │   ├── roc_curve.pdf
+│       │   │   └── roc_curve.png
+│       │   ├── raw_results.csv
+│       │   └── raw_results.json
+│       └── latest_run_path.txt
+├── scenario_generation
+│   ├── __init__.py
+│   ├── generator.py
+│   └── multi_seed.py
+├── scenarios
+│   ├── collusion
+│   │   ├── msg_000.json
+│   │   ├── msg_001.json
+│   │   ├── msg_002.json
+│   │   ├── msg_003.json
+│   │   ├── msg_004.json
+│   │   ├── msg_005.json
+│   │   ├── msg_006.json
+│   │   ├── msg_007.json
+│   │   ├── msg_008.json
+│   │   ├── msg_009.json
+│   │   ├── msg_010.json
+│   │   ├── msg_011.json
+│   │   ├── msg_012.json
+│   │   ├── msg_013.json
+│   │   ├── msg_014.json
+│   │   ├── msg_015.json
+│   │   ├── msg_016.json
+│   │   ├── msg_017.json
+│   │   ├── msg_018.json
+│   │   └── msg_019.json
+│   ├── fabrication
+│   │   ├── msg_000.json
+│   │   ├── msg_001.json
+│   │   ├── msg_002.json
+│   │   ├── msg_003.json
+│   │   ├── msg_004.json
+│   │   ├── msg_005.json
+│   │   ├── msg_006.json
+│   │   ├── msg_007.json
+│   │   ├── msg_008.json
+│   │   ├── msg_009.json
+│   │   ├── msg_010.json
+│   │   ├── msg_011.json
+│   │   ├── msg_012.json
+│   │   ├── msg_013.json
+│   │   ├── msg_014.json
+│   │   ├── msg_015.json
+│   │   ├── msg_016.json
+│   │   ├── msg_017.json
+│   │   ├── msg_018.json
+│   │   └── msg_019.json
+│   ├── mixed
+│   │   ├── msg_000.json
+│   │   ├── msg_001.json
+│   │   ├── msg_002.json
+│   │   ├── msg_003.json
+│   │   ├── msg_004.json
+│   │   ├── msg_005.json
+│   │   ├── msg_006.json
+│   │   ├── msg_007.json
+│   │   ├── msg_008.json
+│   │   ├── msg_009.json
+│   │   ├── msg_010.json
+│   │   ├── msg_011.json
+│   │   ├── msg_012.json
+│   │   ├── msg_013.json
+│   │   ├── msg_014.json
+│   │   ├── msg_015.json
+│   │   ├── msg_016.json
+│   │   ├── msg_017.json
+│   │   ├── msg_018.json
+│   │   └── msg_019.json
+│   ├── replay
+│   │   ├── msg_000.json
+│   │   ├── msg_001.json
+│   │   ├── msg_002.json
+│   │   ├── msg_003.json
+│   │   ├── msg_004.json
+│   │   ├── msg_005.json
+│   │   ├── msg_006.json
+│   │   ├── msg_007.json
+│   │   ├── msg_008.json
+│   │   ├── msg_009.json
+│   │   ├── msg_010.json
+│   │   ├── msg_011.json
+│   │   ├── msg_012.json
+│   │   ├── msg_013.json
+│   │   ├── msg_014.json
+│   │   ├── msg_015.json
+│   │   ├── msg_016.json
+│   │   ├── msg_017.json
+│   │   ├── msg_018.json
+│   │   └── msg_019.json
+│   └── sybil
+│       ├── msg_000.json
+│       ├── msg_001.json
+│       ├── msg_002.json
+│       ├── msg_003.json
+│       ├── msg_004.json
+│       ├── msg_005.json
+│       ├── msg_006.json
+│       ├── msg_007.json
+│       ├── msg_008.json
+│       ├── msg_009.json
+│       ├── msg_010.json
+│       ├── msg_011.json
+│       ├── msg_012.json
+│       ├── msg_013.json
+│       ├── msg_014.json
+│       ├── msg_015.json
+│       ├── msg_016.json
+│       ├── msg_017.json
+│       ├── msg_018.json
+│       └── msg_019.json
+├── scratch
+│   ├── check_belief.py
+│   ├── generate_manual_datasets.py
+│   ├── run_evaluation.py
+│   └── test_extractor_values.py
+├── semantic_evaluation
+│   ├── __init__.py
+│   ├── run_semantic_evaluation.py
+│   ├── semantic_attack_dataset.py
+│   ├── semantic_attack_evaluation.py
+│   ├── semantic_attack_generator.py
+│   ├── semantic_attack_metrics.py
+│   └── semantic_attack_plots.py
+├── simulation
+│   ├── __init__.py
+│   └── llm_dispatcher.py
+├── test_messages
+│   ├── b1_fail
+│   │   ├── certificate_switch.json
+│   │   ├── impossible_acceleration.json
+│   │   ├── impossible_speed.json
+│   │   ├── invalid_coordinates.json
+│   │   ├── malformed.json
+│   │   ├── replay.json
+│   │   └── stale_timestamp.json
+│   ├── b2
+│   │   ├── collusion
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   ├── msg_009.json
+│   │   │   ├── msg_010.json
+│   │   │   ├── msg_011.json
+│   │   │   ├── msg_012.json
+│   │   │   ├── msg_013.json
+│   │   │   ├── msg_014.json
+│   │   │   ├── msg_015.json
+│   │   │   ├── msg_016.json
+│   │   │   ├── msg_017.json
+│   │   │   ├── msg_018.json
+│   │   │   └── msg_019.json
+│   │   ├── fabrication
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   ├── msg_009.json
+│   │   │   ├── msg_010.json
+│   │   │   ├── msg_011.json
+│   │   │   ├── msg_012.json
+│   │   │   ├── msg_013.json
+│   │   │   ├── msg_014.json
+│   │   │   ├── msg_015.json
+│   │   │   ├── msg_016.json
+│   │   │   ├── msg_017.json
+│   │   │   ├── msg_018.json
+│   │   │   └── msg_019.json
+│   │   ├── mixed
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   ├── msg_009.json
+│   │   │   ├── msg_010.json
+│   │   │   ├── msg_011.json
+│   │   │   ├── msg_012.json
+│   │   │   ├── msg_013.json
+│   │   │   ├── msg_014.json
+│   │   │   ├── msg_015.json
+│   │   │   ├── msg_016.json
+│   │   │   ├── msg_017.json
+│   │   │   ├── msg_018.json
+│   │   │   └── msg_019.json
+│   │   ├── replay
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   ├── msg_009.json
+│   │   │   ├── msg_010.json
+│   │   │   ├── msg_011.json
+│   │   │   ├── msg_012.json
+│   │   │   ├── msg_013.json
+│   │   │   ├── msg_014.json
+│   │   │   ├── msg_015.json
+│   │   │   ├── msg_016.json
+│   │   │   ├── msg_017.json
+│   │   │   ├── msg_018.json
+│   │   │   └── msg_019.json
+│   │   └── sybil
+│   │       ├── msg_000.json
+│   │       ├── msg_001.json
+│   │       ├── msg_002.json
+│   │       ├── msg_003.json
+│   │       ├── msg_004.json
+│   │       ├── msg_005.json
+│   │       ├── msg_006.json
+│   │       ├── msg_007.json
+│   │       ├── msg_008.json
+│   │       ├── msg_009.json
+│   │       ├── msg_010.json
+│   │       ├── msg_011.json
+│   │       ├── msg_012.json
+│   │       ├── msg_013.json
+│   │       ├── msg_014.json
+│   │       ├── msg_015.json
+│   │       ├── msg_016.json
+│   │       ├── msg_017.json
+│   │       ├── msg_018.json
+│   │       └── msg_019.json
+│   ├── benign
+│   │   ├── motorcycle.json
+│   │   ├── normal_car.json
+│   │   ├── normal_truck.json
+│   │   └── rsu_message.json
+│   ├── context
+│   │   ├── highway
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   └── msg_009.json
+│   │   ├── intersection
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   └── msg_009.json
+│   │   ├── roundabout
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   └── msg_009.json
+│   │   ├── tunnel
+│   │   │   ├── msg_000.json
+│   │   │   ├── msg_001.json
+│   │   │   ├── msg_002.json
+│   │   │   ├── msg_003.json
+│   │   │   ├── msg_004.json
+│   │   │   ├── msg_005.json
+│   │   │   ├── msg_006.json
+│   │   │   ├── msg_007.json
+│   │   │   ├── msg_008.json
+│   │   │   └── msg_009.json
+│   │   └── urban
+│   │       ├── msg_000.json
+│   │       ├── msg_001.json
+│   │       ├── msg_002.json
+│   │       ├── msg_003.json
+│   │       ├── msg_004.json
+│   │       ├── msg_005.json
+│   │       ├── msg_006.json
+│   │       ├── msg_007.json
+│   │       ├── msg_008.json
+│   │       └── msg_009.json
+│   ├── regression
+│   │   └── stale_timestamp.json
+│   └── stress
+│       ├── 100_nodes
+│       │   ├── msg_000.json
+│       │   ├── msg_001.json
+│       │   ├── msg_002.json
+│       │   ├── msg_003.json
+│       │   ├── msg_004.json
+│       │   ├── msg_005.json
+│       │   ├── msg_006.json
+│       │   ├── msg_007.json
+│       │   ├── msg_008.json
+│       │   ├── msg_009.json
+│       │   ├── msg_010.json
+│       │   ├── msg_011.json
+│       │   ├── msg_012.json
+│       │   ├── msg_013.json
+│       │   ├── msg_014.json
+│       │   ├── msg_015.json
+│       │   ├── msg_016.json
+│       │   ├── msg_017.json
+│       │   ├── msg_018.json
+│       │   ├── msg_019.json
+│       │   ├── msg_020.json
+│       │   ├── msg_021.json
+│       │   ├── msg_022.json
+│       │   ├── msg_023.json
+│       │   ├── msg_024.json
+│       │   ├── msg_025.json
+│       │   ├── msg_026.json
+│       │   ├── msg_027.json
+│       │   ├── msg_028.json
+│       │   ├── msg_029.json
+│       │   ├── msg_030.json
+│       │   ├── msg_031.json
+│       │   ├── msg_032.json
+│       │   ├── msg_033.json
+│       │   ├── msg_034.json
+│       │   ├── msg_035.json
+│       │   ├── msg_036.json
+│       │   ├── msg_037.json
+│       │   ├── msg_038.json
+│       │   ├── msg_039.json
+│       │   ├── msg_040.json
+│       │   ├── msg_041.json
+│       │   ├── msg_042.json
+│       │   ├── msg_043.json
+│       │   ├── msg_044.json
+│       │   ├── msg_045.json
+│       │   ├── msg_046.json
+│       │   ├── msg_047.json
+│       │   ├── msg_048.json
+│       │   ├── msg_049.json
+│       │   ├── msg_050.json
+│       │   ├── msg_051.json
+│       │   ├── msg_052.json
+│       │   ├── msg_053.json
+│       │   ├── msg_054.json
+│       │   ├── msg_055.json
+│       │   ├── msg_056.json
+│       │   ├── msg_057.json
+│       │   ├── msg_058.json
+│       │   ├── msg_059.json
+│       │   ├── msg_060.json
+│       │   ├── msg_061.json
+│       │   ├── msg_062.json
+│       │   ├── msg_063.json
+│       │   ├── msg_064.json
+│       │   ├── msg_065.json
+│       │   ├── msg_066.json
+│       │   ├── msg_067.json
+│       │   ├── msg_068.json
+│       │   ├── msg_069.json
+│       │   ├── msg_070.json
+│       │   ├── msg_071.json
+│       │   ├── msg_072.json
+│       │   ├── msg_073.json
+│       │   ├── msg_074.json
+│       │   ├── msg_075.json
+│       │   ├── msg_076.json
+│       │   ├── msg_077.json
+│       │   ├── msg_078.json
+│       │   ├── msg_079.json
+│       │   ├── msg_080.json
+│       │   ├── msg_081.json
+│       │   ├── msg_082.json
+│       │   ├── msg_083.json
+│       │   ├── msg_084.json
+│       │   ├── msg_085.json
+│       │   ├── msg_086.json
+│       │   ├── msg_087.json
+│       │   ├── msg_088.json
+│       │   ├── msg_089.json
+│       │   ├── msg_090.json
+│       │   ├── msg_091.json
+│       │   ├── msg_092.json
+│       │   ├── msg_093.json
+│       │   ├── msg_094.json
+│       │   ├── msg_095.json
+│       │   ├── msg_096.json
+│       │   ├── msg_097.json
+│       │   ├── msg_098.json
+│       │   └── msg_099.json
+│       ├── 10_nodes
+│       │   ├── msg_000.json
+│       │   ├── msg_001.json
+│       │   ├── msg_002.json
+│       │   ├── msg_003.json
+│       │   ├── msg_004.json
+│       │   ├── msg_005.json
+│       │   ├── msg_006.json
+│       │   ├── msg_007.json
+│       │   ├── msg_008.json
+│       │   └── msg_009.json
+│       └── 50_nodes
+│           ├── msg_000.json
+│           ├── msg_001.json
+│           ├── msg_002.json
+│           ├── msg_003.json
+│           ├── msg_004.json
+│           ├── msg_005.json
+│           ├── msg_006.json
+│           ├── msg_007.json
+│           ├── msg_008.json
+│           ├── msg_009.json
+│           ├── msg_010.json
+│           ├── msg_011.json
+│           ├── msg_012.json
+│           ├── msg_013.json
+│           ├── msg_014.json
+│           ├── msg_015.json
+│           ├── msg_016.json
+│           ├── msg_017.json
+│           ├── msg_018.json
+│           ├── msg_019.json
+│           ├── msg_020.json
+│           ├── msg_021.json
+│           ├── msg_022.json
+│           ├── msg_023.json
+│           ├── msg_024.json
+│           ├── msg_025.json
+│           ├── msg_026.json
+│           ├── msg_027.json
+│           ├── msg_028.json
+│           ├── msg_029.json
+│           ├── msg_030.json
+│           ├── msg_031.json
+│           ├── msg_032.json
+│           ├── msg_033.json
+│           ├── msg_034.json
+│           ├── msg_035.json
+│           ├── msg_036.json
+│           ├── msg_037.json
+│           ├── msg_038.json
+│           ├── msg_039.json
+│           ├── msg_040.json
+│           ├── msg_041.json
+│           ├── msg_042.json
+│           ├── msg_043.json
+│           ├── msg_044.json
+│           ├── msg_045.json
+│           ├── msg_046.json
+│           ├── msg_047.json
+│           ├── msg_048.json
+│           └── msg_049.json
+├── test_system.py
+├── tests
+│   ├── profile_b3_pipeline.py
+│   ├── system_integration_trace_output.txt
+│   ├── system_integration_validation.py
+│   ├── test_abstain_semantics.py
+│   ├── test_adapters.py
+│   ├── test_b2_trust_engine.py
+│   ├── test_b3_calibration_math.py
+│   ├── test_cp_uncertainty_semantics.py
+│   ├── test_dempster_shafer_fusion.py
+│   ├── test_interface_equivalence.py
+│   ├── test_large_scale_framework.py
+│   ├── test_open_set_math.py
+│   ├── test_pki_mbd_cp_integration.py
+│   ├── verify_b3_model.py
+│   └── verify_dependency_graph.py
+├── trust_engine
+│   ├── __init__.py
+│   ├── decision_engine.py
+│   ├── dempster_shafer.py
+│   ├── exceptions.py
+│   ├── models.py
+│   └── policy.py
+└── validation
+    ├── ablation_table_results.json
+    ├── latency_throughput_results.json
+    ├── run_ablation_table.py
+    ├── run_b3_b6_synthesizer_robustness.py
+    ├── run_b4_fallback_degradation.py
+    ├── run_c1_c2_latency_throughput.py
+    ├── run_phase1_validation.py
+    ├── run_phase2_adaptive_threshold_validation.py
+    ├── run_phase2_behavior_reasoning_validation.py
+    ├── run_phase2_csia_integration_validation.py
+    ├── run_phase2_dst_validation.py
+    ├── run_phase2_motion_context_validation.py
+    ├── run_phase2_observability_validation.py
+    ├── run_phase2_trust_propagation_validation.py
+    └── test_pipeline_equivalence.py
+
+96 directories, 848 files

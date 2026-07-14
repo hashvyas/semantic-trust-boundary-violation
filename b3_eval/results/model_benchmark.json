@@ -1,0 +1,127 @@
+{
+  "manifest": {
+    "experiment": "b3_model_benchmark",
+    "timestamp_utc": "2026-07-13T19:40:41Z",
+    "checkpoint": {
+      "ok": true,
+      "path": "/mnt/c/Users/mukil/Downloads/stbv_engine/b3/solution_stb/b3_semantic_gate/model/semantic_gate_v3/pytorch_model.bin",
+      "size_bytes": 567622450,
+      "sha256_16": "9ee7475e08f76ce6"
+    },
+    "torch": {
+      "ok": true,
+      "version": "2.13.0+cu130",
+      "cuda": true,
+      "device_name": "NVIDIA GeForce RTX 4050 Laptop GPU"
+    },
+    "python": "3.12.3",
+    "platform": "Linux 6.6.87.2-microsoft-standard-WSL2 x86_64",
+    "candidates": [
+      "microsoft/deberta-v3-base",
+      "roberta-base",
+      "answerdotai/ModernBERT-base",
+      "distilroberta-base",
+      "microsoft/MiniLM-L12-H384-uncased"
+    ],
+    "epochs": 3,
+    "seeds": [
+      0
+    ]
+  },
+  "results": {
+    "INCUMBENT (semantic_gate_v3)": {
+      "accuracy": 0.8333333333333334,
+      "precision": 1.0,
+      "recall": 0.8095238095238095,
+      "f1": 0.8947368421052632,
+      "tp": 17,
+      "fp": 0,
+      "fn": 4,
+      "tn": 3,
+      "latency_ms": {
+        "p50": 21.083911999994598,
+        "p95": 30.562425999960396,
+        "mean": 21.52995618001114
+      },
+      "parameters": 141896450,
+      "train_seconds": null,
+      "note": "already fine-tuned; not retrained here"
+    },
+    "microsoft/deberta-v3-base": {
+      "error": "ValueError: `tiktoken` is required to read a `tiktoken` file. Install it with `pip install tiktoken`."
+    },
+    "roberta-base": {
+      "accuracy": 0.875,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.9333333333333333,
+      "tp": 21,
+      "fp": 3,
+      "fn": 0,
+      "tn": 0,
+      "latency_ms": {
+        "p50": 13.668090000464872,
+        "p95": 26.019097000244074,
+        "mean": 14.88627469992025
+      },
+      "parameters": 124647170,
+      "train_seconds": 5.862041482999302
+    },
+    "answerdotai/ModernBERT-base": {
+      "accuracy": 0.875,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.9333333333333333,
+      "tp": 21,
+      "fp": 3,
+      "fn": 0,
+      "tn": 0,
+      "latency_ms": {
+        "p50": 36.95960499953799,
+        "p95": 50.36374400060595,
+        "mean": 37.982092239963094
+      },
+      "parameters": 149606402,
+      "train_seconds": 19.270317626999713
+    },
+    "distilroberta-base": {
+      "accuracy": 0.875,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.9333333333333333,
+      "tp": 21,
+      "fp": 3,
+      "fn": 0,
+      "tn": 0,
+      "latency_ms": {
+        "p50": 9.435197999664524,
+        "p95": 16.730583999560622,
+        "mean": 9.841059049949763
+      },
+      "parameters": 82119938,
+      "train_seconds": 2.6096840890004387
+    },
+    "microsoft/MiniLM-L12-H384-uncased": {
+      "accuracy": 0.875,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.9333333333333333,
+      "tp": 21,
+      "fp": 3,
+      "fn": 0,
+      "tn": 0,
+      "latency_ms": {
+        "p50": 16.1848440002359,
+        "p95": 26.536731999840413,
+        "mean": 16.971872479944068
+      },
+      "parameters": 33360770,
+      "train_seconds": 2.030104207000477
+    }
+  },
+  "decision": "SWAP JUSTIFIED: roberta-base beats incumbent by 3.86 F1 points (>= 2.0) within the latency tolerance. Verify on a second seed before adopting.",
+  "swap_rule": {
+    "f1_margin_points": 2.0,
+    "latency_tolerance": 1.25
+  }
+}

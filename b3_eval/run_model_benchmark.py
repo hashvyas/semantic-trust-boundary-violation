@@ -101,16 +101,22 @@ def measure_latency(fn, n=100):
     return {"p50": s[len(s) // 2], "p95": s[int(len(s) * .95)], "mean": statistics.mean(runs)}
 
 
-def main():
+def build_arg_parser():
     ap = argparse.ArgumentParser()
     ap.add_argument("--candidates", nargs="+", default=DEFAULT_CANDIDATES)
     ap.add_argument("--epochs", type=int, default=3)
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--lr", type=float, default=2e-5)
-    args = ap.parse_args()
+    ap.add_argument("--seeds", type=int, nargs="+", default=[0])
+    return ap
+
+
+def main():
+    args = build_arg_parser().parse_args()
 
     manifest = env_manifest("b3_model_benchmark", {"candidates": args.candidates,
-                                                     "epochs": args.epochs})
+                                                     "epochs": args.epochs,
+                                                     "seeds": args.seeds})
     train = load_jsonl(DATA / "train_split.jsonl")
     test = load_jsonl(DATA / "test_split.jsonl")
     ck, tt = checkpoint_status(), torch_status()
@@ -118,6 +124,7 @@ def main():
     print("=" * 78)
     print("B3 MODEL BENCHMARK (Part 5)")
     print("=" * 78)
+    print(f"Seeds: {args.seeds}")
     if train is None or test is None:
         print("CANNOT RUN: missing splits.")
         print(f"  expected {DATA / 'train_split.jsonl'} and {DATA / 'test_split.jsonl'}")
