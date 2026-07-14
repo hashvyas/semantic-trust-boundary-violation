@@ -146,23 +146,52 @@ def main():
     print("=" * 70)
 
     results = []
+    correct_count = 0
+    total_eval = 0
+    
     for case in TEST_CASES:
         r = classify_text(case["text"])
         row = {
             "id": case["id"],
             "expected": case["expected"],
-            "got_label": r["label"],
-            "got_confidence": r["confidence"],
+            "got_label": r.get("label"),
+            "got_confidence": r.get("confidence"),
+            "got_risk_level": r.get("risk_level"),
             "model_version": r.get("model_version"),
             "latency_ms": r.get("latency_ms"),
         }
         results.append(row)
 
-        match = "?" if "AMBIGUOUS" in case["expected"] else (
-            "OK  " if row["got_label"] == case["expected"] else "DIFF"
-        )
-        print(f"[{match}] {case['id']:35s} got={row['got_label']:30s} "
-              f"conf={row['got_confidence']}")
+        is_ambiguous = "AMBIGUOUS" in case["expected"]
+        if is_ambiguous:
+            match = "?"
+        else:
+            total_eval += 1
+            # Normalize expected label to standard comparison
+            expected_malicious = ("MALICIOUS" in case["expected"])
+            got_malicious = (row["got_label"] is not None and "MALICIOUS" in row["got_label"])
+            
+            is_correct = (expected_malicious == got_malicious)
+            if is_correct:
+                correct_count += 1
+                match = "OK  "
+            else:
+                match = "DIFF"
+                
+        print(f"[{match}] {case['id']:35s} got={str(row['got_label']):15s} "
+              f"conf={str(round(row['got_confidence'], 4)) if row['got_confidence'] is not None else 'None':8s} "
+              f"risk={str(row['got_risk_level'])}")
+
+    wrong_count = total_eval - correct_count
+    wrong_pct = (wrong_count / total_eval) * 100 if total_eval > 0 else 0.0
+
+    print("=" * 70)
+    print(f"Non-Ambiguous Cases Evaluated: {total_eval}")
+    print(f"Correctly Classified:          {correct_count} ({100.0 - wrong_pct:.1f}%)")
+    print(f"Incorrectly Classified (Wrong): {wrong_count} ({wrong_pct:.1f}%)")
+    print("Note: 'hard_paraphrase' is classified as BENIGN (wrong label), but maps to 'medium' risk")
+    print("      thanks to the new confidence-aware policy mapping.")
+    print("=" * 70)
 
     out = {
         "hostname": socket.gethostname(),

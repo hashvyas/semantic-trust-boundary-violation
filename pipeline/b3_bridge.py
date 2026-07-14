@@ -95,14 +95,21 @@ class B3RiskPolicy:
     this only governs how B3 maps its own label+confidence to risk_level.
     """
 
-    malicious_labels: FrozenSet[str] = frozenset({"MALICIOUS", "MALICIOUS_SEMANTIC_MANIPULATION"})
+    malicious_labels: FrozenSet[str] = field(default_factory=lambda: frozenset({"MALICIOUS", "MALICIOUS_SEMANTIC_MANIPULATION"}))
     high_confidence: float = 0.85
     medium_confidence: float = 0.60
+    confidence_aware_benign: bool = False
 
     def classify(self, label: Optional[str], confidence: Optional[float]) -> str:
         if label is None or confidence is None:
             return "unavailable"
         if label not in self.malicious_labels:
+            if self.confidence_aware_benign:
+                if confidence >= self.high_confidence:
+                    return "none"
+                if confidence >= self.medium_confidence:
+                    return "low"
+                return "medium"
             return "none"
         if confidence >= self.high_confidence:
             return "high"
@@ -118,6 +125,7 @@ class B3RiskPolicy:
             malicious_labels=frozenset(labels) if labels else B3RiskPolicy().malicious_labels,
             high_confidence=thresholds.get("high", 0.85),
             medium_confidence=thresholds.get("medium", 0.60),
+            confidence_aware_benign=config.get("confidence_aware_benign", False),
         )
 
 
@@ -143,6 +151,8 @@ def _load_b3_config(config_path: Optional[str | os.PathLike] = None) -> Dict[str
         return data.get("b3_semantic_gate", {})
     except Exception:
         return {}
+
+load_b3_config = _load_b3_config
 
 class StubSemanticClassifier:
     """Default stub classifier returning 'unavailable' state.

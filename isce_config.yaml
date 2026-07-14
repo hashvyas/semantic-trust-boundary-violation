@@ -531,3 +531,5 @@ b3_semantic_gate:
     high: 0.85    # confidence >= this on a malicious label -> risk_level="high"
     medium: 0.60  # confidence >= this (below high) -> risk_level="medium"
                   # confidence below "medium" on a malicious label -> risk_level="low"
+  enable_ensembling: true
+  confidence_aware_benign: true

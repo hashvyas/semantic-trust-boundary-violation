@@ -1,7 +1,7 @@
 {
   "manifest": {
     "experiment": "b3_robustness",
-    "timestamp_utc": "2026-07-13T10:05:53Z",
+    "timestamp_utc": "2026-07-14T05:28:01Z",
     "checkpoint": {
       "ok": true,
       "path": "C:\\semantic-trust-boundary-violation\\b3\\solution_stb\\b3_semantic_gate\\model\\semantic_gate_v3\\pytorch_model.bin",

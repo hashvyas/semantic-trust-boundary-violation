@@ -158,7 +158,7 @@ def main():
     print("=" * 78)
     print("B3 ROBUSTNESS BATTERY (real model)")
     print("=" * 78)
-    print(f"{'family':22s} {'flip_rate':>10s} {'evasion':>9s} {'over_def':>9s} {'meanΔconf':>10s}")
+    print(f"{'family':22s} {'flip_rate':>10s} {'evasion':>9s} {'over_def':>9s} {'mean_d_conf':>10s}")
     summary = {}
     for fam, d in per_family.items():
         n = len(SEEDS)

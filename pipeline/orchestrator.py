@@ -47,7 +47,7 @@ from typing import Any, Dict, List, Optional
 from b1_scsv.scsv import SCSV
 from b2_explain.explainability import ExplainabilityEngine
 from pipeline.synthesizer import synthesize_message
-from pipeline.b3_bridge import classify_text, preload_classifier
+from pipeline.b3_bridge import classify_text, preload_classifier, load_b3_config
 from trust_engine.decision_engine import TrustDecisionEngine
 from trust_engine.policy import TrustPolicy
 from adapters.base import Adapter
@@ -149,6 +149,10 @@ class ISCEPipeline:
         # one-time model-load cost out of any single message's "bridge_ms"
         # (see pipeline/b3_bridge.py::preload_classifier docstring).
         self.b3_load_ms = preload_classifier()
+        
+        b3_config = load_b3_config()
+        self.enable_b3_ensembling = b3_config.get("enable_ensembling", False)
+
         if csia is not None:
             # Legacy compatibility shim only. b2_csia.CSIA is deprecated and
             # NOT used by the pipeline anymore -- B2 is now b2_explain.
@@ -313,16 +317,70 @@ class ISCEPipeline:
             )
         cp_ms = (time.perf_counter() - t_cp_start) * 1000.0
 
-        # 5. Run Message Synthesizer — consumes ONLY the raw message
-        #    cluster (never B2 output).
+        # 5. Run Message Synthesizer & 6. Run B3 Adapter Bridge (Semantic Gate)
         t_synt_start = time.perf_counter()
-        synthesized_message = synthesize_message(messages, b2_dict, context)
-        synt_ms = (time.perf_counter() - t_synt_start) * 1000.0
-
-        # 6. Run B3 Adapter Bridge (Semantic Gate)
-        t_bridge_start = time.perf_counter()
-        b3_result = classify_text(synthesized_message["text"], synthesized_message)
-        bridge_ms = (time.perf_counter() - t_bridge_start) * 1000.0
+        
+        if self.enable_b3_ensembling:
+            from pipeline.synthesizer import TemplateStyle
+            from pipeline.b3_bridge import _CLASSIFIER_INSTANCE
+            
+            b3_results = []
+            synt_times = []
+            last_synthesized_message = None
+            
+            for style in TemplateStyle:
+                t_sub_start = time.perf_counter()
+                synt_msg = synthesize_message(messages, b2_dict, context, template=style)
+                synt_times.append(time.perf_counter() - t_sub_start)
+                
+                t_bridge_sub = time.perf_counter()
+                res = classify_text(synt_msg["text"], synt_msg)
+                b3_results.append((res, time.perf_counter() - t_bridge_sub))
+                last_synthesized_message = synt_msg
+            
+            synt_ms = sum(synt_times) * 1000.0
+            bridge_ms = sum(dt for _, dt in b3_results) * 1000.0
+            synthesized_message = last_synthesized_message
+            
+            availables = [r for r, _ in b3_results if r.get("available")]
+            if not availables:
+                b3_result = {
+                    "available": False,
+                    "label": None,
+                    "confidence": None,
+                    "risk_level": "unavailable",
+                    "status": "B3 ensembling: no individual classifier runs succeeded",
+                    "p_malicious": None
+                }
+            else:
+                avg_p = sum(r.get("p_malicious", 0.0) for r in availables) / len(availables)
+                if avg_p >= 0.5:
+                    label = "MALICIOUS"
+                    confidence = float(avg_p)
+                else:
+                    label = "BENIGN"
+                    confidence = 1.0 - float(avg_p)
+                
+                if _CLASSIFIER_INSTANCE is not None:
+                    risk_level = _CLASSIFIER_INSTANCE.risk_policy.classify(label, confidence)
+                else:
+                    risk_level = "unavailable"
+                
+                b3_result = {
+                    "available": True,
+                    "label": label,
+                    "confidence": confidence,
+                    "risk_level": risk_level,
+                    "status": "ok",
+                    "p_malicious": avg_p,
+                }
+        else:
+            synthesized_message = synthesize_message(messages, b2_dict, context)
+            synt_ms = (time.perf_counter() - t_synt_start) * 1000.0
+            
+            t_bridge_start = time.perf_counter()
+            b3_result = classify_text(synthesized_message["text"], synthesized_message)
+            bridge_ms = (time.perf_counter() - t_bridge_start) * 1000.0
 
         # === CP EVIDENCE FOLD (corrected semantics; see CHANGELOG.md) ===
         # CP's cp_confidence conflates two distinct epistemic conditions:
