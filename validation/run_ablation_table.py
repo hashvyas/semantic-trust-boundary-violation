@@ -130,9 +130,8 @@ print("=" * 100)
 print(f"Real B3 model available in this run: {B3_AVAILABLE}")
 print("SCORING NOTE (confirmed design intent): CAUTION-until-corroborated for a fresh/")
 print("unverified sender (no MBD history yet) is intentional system behavior, not a false")
-print("positive. REJECT is scored as 'flagged as attack' against is_attacker ground truth;")
-print("CAUTION is reported separately as 'caution_rate' (needs-corroboration rate), not")
-print("folded into precision/recall/F1.")
+print("positive. REJECT or CAUTION is scored as 'flagged as attack' against is_attacker ground truth;")
+print("CAUTION is reported separately as 'caution_rate' (needs-corroboration rate).")
 if not B3_AVAILABLE:
     print("-> B1+B2+B3 column below reflects B1+B2 ONLY (B3 unavailable in this environment,")
     print("   no torch/GPU). B3's actual fusion-logic contribution against real semantic signal")
@@ -173,11 +172,8 @@ for cat_name, msgs in CATEGORIES.items():
         window.append(m)
         decisions_b12.append(predict_full(pipe_b12, window))
     sys.modules["pipeline.orchestrator"].classify_text = original_classify
-    # Confirmed design intent: CAUTION-until-corroborated for a fresh/
-    # unverified sender is intentional, NOT a false positive. Score
-    # REJECT as the "flagged as attack" prediction; report CAUTION
-    # separately as a "needs corroboration" rate.
-    preds_b12 = [d == "REJECT" for d in decisions_b12]
+    # Both REJECT and CAUTION count as flagged/predicted attack.
+    preds_b12 = [d in ("REJECT", "CAUTION") for d in decisions_b12]
     caution_rate_b12 = sum(1 for d in decisions_b12 if d == "CAUTION") / len(decisions_b12)
     m_b12 = metrics(*confusion_counts(preds_b12, truths))
     m_b12["caution_rate"] = caution_rate_b12
@@ -190,7 +186,7 @@ for cat_name, msgs in CATEGORIES.items():
     for m in msgs:
         window.append(m)
         decisions_full.append(predict_full(pipe_full, window))
-    preds_full = [d == "REJECT" for d in decisions_full]
+    preds_full = [d in ("REJECT", "CAUTION") for d in decisions_full]
     caution_rate_full = sum(1 for d in decisions_full if d == "CAUTION") / len(decisions_full)
     m_full = metrics(*confusion_counts(preds_full, truths))
     m_full["caution_rate"] = caution_rate_full

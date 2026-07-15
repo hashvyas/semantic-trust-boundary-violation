@@ -42,12 +42,12 @@ def confusion_matrix(rows: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
     """Compute binary confusion matrix and derived metrics.
 
     Positive class = attacker message (truth_attacker == True).
-    Predicted positive = decision is REJECT.
+    Predicted positive = decision is REJECT or CAUTION.
     """
-    tp = sum(1 for r in rows if r["decision"] == "REJECT" and r["truth_attacker"])
-    fp = sum(1 for r in rows if r["decision"] == "REJECT" and not r["truth_attacker"])
-    fn = sum(1 for r in rows if r["decision"] != "REJECT" and r["truth_attacker"])
-    tn = sum(1 for r in rows if r["decision"] != "REJECT" and not r["truth_attacker"])
+    tp = sum(1 for r in rows if r["decision"] in ("REJECT", "CAUTION") and r["truth_attacker"])
+    fp = sum(1 for r in rows if r["decision"] in ("REJECT", "CAUTION") and not r["truth_attacker"])
+    fn = sum(1 for r in rows if r["decision"] not in ("REJECT", "CAUTION") and r["truth_attacker"])
+    tn = sum(1 for r in rows if r["decision"] not in ("REJECT", "CAUTION") and not r["truth_attacker"])
     n = max(len(rows), 1)
     caution = sum(1 for r in rows if r["decision"] == "CAUTION")
     caution_tp = sum(1 for r in rows if r["decision"] == "CAUTION" and r["truth_attacker"])
@@ -266,24 +266,24 @@ def statistical_comparison(
     B1+B2 (no B3) vs B1+B2+B3 (full)."""
 
     # McNemar: paired predictions on the SAME scenarios
-    preds_b1b2 = [r["decision"] == "REJECT" for r in rows_b1b2]
-    preds_full = [r["decision"] == "REJECT" for r in rows_full]
+    preds_b1b2 = [r["decision"] in ("REJECT", "CAUTION") for r in rows_b1b2]
+    preds_full = [r["decision"] in ("REJECT", "CAUTION") for r in rows_full]
     truths = [r["truth_attacker"] for r in rows_b1b2]
 
     mcnemar_result = mcnemar(preds_b1b2, preds_full, truths)
 
     # Detection rates
-    dr_b1b2 = sum(1 for r in rows_b1b2 if r["decision"] == "REJECT" and r["truth_attacker"]) / \
+    dr_b1b2 = sum(1 for r in rows_b1b2 if r["decision"] in ("REJECT", "CAUTION") and r["truth_attacker"]) / \
               max(sum(1 for r in rows_b1b2 if r["truth_attacker"]), 1)
-    dr_full = sum(1 for r in rows_full if r["decision"] == "REJECT" and r["truth_attacker"]) / \
+    dr_full = sum(1 for r in rows_full if r["decision"] in ("REJECT", "CAUTION") and r["truth_attacker"]) / \
               max(sum(1 for r in rows_full if r["truth_attacker"]), 1)
 
     h = cohens_h(dr_full, dr_b1b2)
 
     # Bootstrap CIs on per-scenario accuracy (1 = correct, 0 = incorrect)
-    acc_b1b2 = [1.0 if (r["decision"] == "REJECT") == r["truth_attacker"] else 0.0
+    acc_b1b2 = [1.0 if (r["decision"] in ("REJECT", "CAUTION")) == r["truth_attacker"] else 0.0
                 for r in rows_b1b2]
-    acc_full = [1.0 if (r["decision"] == "REJECT") == r["truth_attacker"] else 0.0
+    acc_full = [1.0 if (r["decision"] in ("REJECT", "CAUTION")) == r["truth_attacker"] else 0.0
                 for r in rows_full]
 
     return {

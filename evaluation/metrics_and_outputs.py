@@ -1,5 +1,5 @@
 """
-evaluation/metrics_and_outputs.py
+ evaluation/metrics_and_outputs.py
 ====================================
 Part 8 metric definitions + Part 12 paper outputs (CSV, LaTeX tables,
 publication-quality figures: confusion matrices, ROC/PR curves where a
@@ -7,11 +7,8 @@ continuous score exists, latency/throughput/ablation plots).
 
 Scoring conventions (documented once, applied everywhere):
 - Positive class = "attacker message" (truth: message['is_attacker']).
-- REJECT  => predicted positive.
-- CAUTION => NOT counted as predicted positive for precision/recall/F1
-  (confirmed design intent: caution-until-corroborated for unverified
-  senders is intended system behavior, not a detection claim). CAUTION is
-  reported as its own rate ("caution_rate") in every table.
+- REJECT/CAUTION => predicted positive (attack).
+- ACCEPT         => predicted negative (benign).
 - ROC/PR curves use (1 - trust_score) as the continuous attack score, only
   for configurations that produce a trust_score (baselines that emit only a
   hard decision get no ROC -- no fake curves).
@@ -30,10 +27,10 @@ import matplotlib.pyplot as plt
 
 
 def confusion(rows: Sequence[Dict[str, Any]]) -> Dict[str, float]:
-    tp = sum(1 for r in rows if r["decision"] == "REJECT" and r["truth_attacker"])
-    fp = sum(1 for r in rows if r["decision"] == "REJECT" and not r["truth_attacker"])
-    fn = sum(1 for r in rows if r["decision"] != "REJECT" and r["truth_attacker"])
-    tn = sum(1 for r in rows if r["decision"] != "REJECT" and not r["truth_attacker"])
+    tp = sum(1 for r in rows if r["decision"] in ("REJECT", "CAUTION") and r["truth_attacker"])
+    fp = sum(1 for r in rows if r["decision"] in ("REJECT", "CAUTION") and not r["truth_attacker"])
+    fn = sum(1 for r in rows if r["decision"] not in ("REJECT", "CAUTION") and r["truth_attacker"])
+    tn = sum(1 for r in rows if r["decision"] not in ("REJECT", "CAUTION") and not r["truth_attacker"])
     n = max(len(rows), 1)
     caution = sum(1 for r in rows if r["decision"] == "CAUTION")
     errors = sum(1 for r in rows if r["decision"] == "ERROR")

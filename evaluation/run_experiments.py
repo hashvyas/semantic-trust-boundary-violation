@@ -143,8 +143,8 @@ def main() -> int:
         shared = sorted(set(full_by_key) & set(other))
         if not shared:
             continue
-        pa = [full_by_key[k]["decision"] == "REJECT" for k in shared]
-        pb = [other[k]["decision"] == "REJECT" for k in shared]
+        pa = [full_by_key[k]["decision"] in ("REJECT", "CAUTION") for k in shared]
+        pb = [other[k]["decision"] in ("REJECT", "CAUTION") for k in shared]
         tt = [full_by_key[k]["truth_attacker"] for k in shared]
         stats_out[f"mcnemar_full_vs_{cfg}"] = st.mcnemar(pa, pb, tt)
     # Bootstrap CI on per-scenario accuracy of the full config (per-scenario
