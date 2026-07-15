@@ -53,6 +53,10 @@ from trust_engine.policy import TrustPolicy
 from adapters.base import Adapter
 from contracts.trust_evidence import TrustEvidence
 
+# Named constants for CP confidence ramp bounds
+CP_CONF_MIN = 0.4
+CP_CONF_MAX = 0.8
+
 # Optional-layer imports are done lazily inside __init__/run() so that
 # importing pipeline.orchestrator never requires numpy (CP's dependency)
 # or cryptography (PKI's dependency) unless those layers are enabled.
@@ -442,22 +446,32 @@ class ISCEPipeline:
                 ) / 0.80
                 # Independent-evidence quantity (corroboration channel).
                 cp_corroboration = float(cp_dict.get("diversity_score", 0.0))
+                cp_confidence = float(cp_dict.get("cp_confidence", 1.0))
+
+                # Compute linear ramp weight [0, 1] based on CP corroboration (diversity)
+                if cp_corroboration <= CP_CONF_MIN:
+                    w = 0.0
+                elif cp_corroboration >= CP_CONF_MAX:
+                    w = 1.0
+                else:
+                    w = (cp_corroboration - CP_CONF_MIN) / (CP_CONF_MAX - CP_CONF_MIN)
 
                 if cp_has_shared_event:
-                    # Contradiction -> disbelief: most-conservative-wins (min),
-                    # driven ONLY by agreement about the shared event, never by
-                    # sparsity. cp_layer's existing 0.7 threshold, applied to
-                    # the contradiction channel it was meant to gate.
-                    combined_score = min(b2_dict["validation_score"], cp_agreement)
-                    combined_valid = b2_dict["validation_valid"] and (cp_agreement > 0.7)
+                    # Contradiction -> disbelief: high confidence contradiction pulls score down to agreement,
+                    # whereas low confidence contradiction ramps back to neutral (1.0) to prevent false disbelief.
+                    effective_agreement = w * cp_agreement + (1.0 - w) * 1.0
+                    combined_score = min(b2_dict["validation_score"], effective_agreement)
+                    combined_valid = b2_dict["validation_valid"] and (effective_agreement > 0.7)
                 else:
                     combined_score = b2_dict["validation_score"]
                     combined_valid = b2_dict["validation_valid"]
 
-                # Corroboration deficit -> uncertainty: lowers confidence
-                # (raising Theta mass downstream), never the score.
-                combined_confidence = min(b2_dict["confidence_calibration"], cp_corroboration) \
-                    if cp_dict.get("num_reports", 0) > 1 else b2_dict["confidence_calibration"]
+                # Corroboration deficit -> uncertainty: lowers confidence (raising Theta mass downstream).
+                # Low corroboration lowers the combined confidence.
+                if cp_dict.get("num_reports", 0) > 1:
+                    combined_confidence = min(b2_dict["confidence_calibration"], cp_corroboration)
+                else:
+                    combined_confidence = b2_dict["confidence_calibration"]
             # num_reports <= 1: CP fused nothing beyond the target itself;
             # it carries no corroboration signal either way -- leave
             # confidence untouched rather than treating "no peers" as

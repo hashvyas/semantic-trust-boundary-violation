@@ -37,40 +37,48 @@ def list_available_datasets(base_dir: pathlib.Path) -> List[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run V2X trust pipeline on a capped subset of VeReMi data.")
     parser.add_argument("--dataset", help="Name of the preprocessed dataset subdirectory in data/veremi_processed")
+    parser.add_argument("--input", help="Filepath to a processed flat reports JSON/NDJSON file directly")
     parser.add_argument("--cap", type=int, default=30, help="Number of messages to run (default: 30)")
     parser.add_argument("--window-size", type=float, default=5.0, help="Temporal window size in seconds for sliding window (default: 5.0)")
     parser.add_argument("--context", default="urban", choices=["urban", "rural", "highway"], help="Road context to pass to pipeline (default: urban)")
     args = parser.parse_args()
 
-    processed_root = ROOT / "data" / "veremi_processed"
-    available = list_available_datasets(processed_root)
+    dataset_name = None
+    manifest_file = None
+    
+    if args.input:
+        reports_file = pathlib.Path(args.input)
+        dataset_name = reports_file.name
+    else:
+        processed_root = ROOT / "data" / "veremi_processed"
+        available = list_available_datasets(processed_root)
 
-    if not available:
-        print(f"[FATAL] No preprocessed datasets found under {processed_root}")
-        print("        Please run import_veremi.py first to import raw logs.")
-        return 1
+        if not available:
+            print(f"[FATAL] No preprocessed datasets found under {processed_root}")
+            print("        Please run import_veremi.py first to import raw logs.")
+            return 1
 
-    dataset_name = args.dataset
-    if not dataset_name:
-        # Default to a quick or tiny dataset if available
-        quick_candidates = [d for d in available if "quick" in d or "tiny" in d]
-        dataset_name = quick_candidates[0] if quick_candidates else available[0]
+        dataset_name = args.dataset
+        if not dataset_name:
+            # Default to a quick or tiny dataset if available
+            quick_candidates = [d for d in available if "quick" in d or "tiny" in d]
+            dataset_name = quick_candidates[0] if quick_candidates else available[0]
 
-    if dataset_name not in available:
-        print(f"[FATAL] Dataset '{dataset_name}' not found.")
-        print(f"        Available datasets: {', '.join(available)}")
-        return 2
+        if dataset_name not in available:
+            print(f"[FATAL] Dataset '{dataset_name}' not found.")
+            print(f"        Available datasets: {', '.join(available)}")
+            return 2
 
-    dataset_dir = processed_root / dataset_name
-    reports_file = dataset_dir / "veremi_flat_reports.json"
-    manifest_file = dataset_dir / "manifest.json"
+        dataset_dir = processed_root / dataset_name
+        reports_file = dataset_dir / "veremi_flat_reports.json"
+        manifest_file = dataset_dir / "manifest.json"
 
     print("=" * 80)
     print(f"RUNNING V2X TRUST PIPELINE CAPPED TEST ON VEREMI DATA")
     print("=" * 80)
     print(f"Dataset:      {dataset_name}")
     print(f"Input file:   {reports_file}")
-    if manifest_file.is_file():
+    if manifest_file and manifest_file.is_file():
         try:
             manifest = json.loads(manifest_file.read_text())
             print(f"Label rule:   {manifest.get('label_rule')}")
@@ -86,7 +94,15 @@ def main() -> int:
     print("[1/3] Loading flat reports...")
     try:
         with open(reports_file, "r") as f:
-            all_reports = json.load(f)
+            content = f.read().strip()
+            if content.startswith("["):
+                all_reports = json.loads(content)
+            else:
+                all_reports = []
+                for line in content.splitlines():
+                    line = line.strip()
+                    if line:
+                        all_reports.append(json.loads(line))
     except Exception as e:
         print(f"[FATAL] Failed to read reports file: {e}")
         return 3
