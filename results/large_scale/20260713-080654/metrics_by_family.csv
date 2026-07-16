@@ -1,6 +1,0 @@
-configuration,family,tp,fp,fn,tn,n,accuracy,precision,recall,f1,fpr,fnr,detection_rate,caution_rate,error_rate
-full,replay,0,0,6,0,6,0.0,nan,0.0,nan,nan,1.0,0.0,1.0,0.0
-full,benign,0,0,0,6,6,1.0,nan,nan,nan,0.0,nan,nan,1.0,0.0
-full,fabrication,0,0,8,0,8,0.0,nan,0.0,nan,nan,1.0,0.0,1.0,0.0
-full,collusion,0,0,3,0,3,0.0,nan,0.0,nan,nan,1.0,0.0,1.0,0.0
-full,sybil,0,0,1,0,1,0.0,nan,0.0,nan,nan,1.0,0.0,1.0,0.0

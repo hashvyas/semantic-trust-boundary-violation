@@ -1,9 +1,0 @@
-{
-  "wall_seconds": 82.66193397499956,
-  "messages_processed": 2880,
-  "throughput_msgs_per_s": 34.84070431827827,
-  "peak_host_rss_mb": 0.0,
-  "cpu_count": null,
-  "b3_available": true,
-  "note": ""
-}
