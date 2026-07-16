@@ -77,6 +77,13 @@ def load_fixture(rel_path: str) -> Any:
     return json.loads((ROOT / rel_path).read_text())
 
 
+def make_fresh(msg: Dict[str, Any]) -> Dict[str, Any]:
+    msg = copy.deepcopy(msg)
+    if "cam" in msg and "generation_delta_time" in msg["cam"]:
+        msg["cam"]["generation_delta_time"] = time.time() * 1000.0
+    return msg
+
+
 # ============================================================
 # Interface contract definitions (documented contracts, checked
 # mechanically against real runtime output, not assumed)
@@ -349,23 +356,23 @@ log("#" * 78)
 log(f"# Run started: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
 # 1. Completely benign message
-msg_benign = load_fixture("test_messages/benign/normal_car.json")
+msg_benign = make_fresh(load_fixture("test_messages/benign/normal_car.json"))
 msg_benign_signed = attach_pki_material(msg_benign, VALID_PRIV, VALID_CERT, VALID_PUB)
-run_scenario_trace("1. Completely benign message", [msg_benign_signed], context="urban", pki_ca=CA)
+run_scenario_trace("1. Completely benign message", [msg_benign_signed], context="urban", pki_ca=CA, expected_trust_level="ACCEPT")
 
 # 2. Invalid certificate (tampered signature)
-msg_invalid_cert = attach_pki_material(load_fixture("test_messages/benign/normal_car.json"),
+msg_invalid_cert = attach_pki_material(make_fresh(load_fixture("test_messages/benign/normal_car.json")),
                                         VALID_PRIV, VALID_CERT, VALID_PUB, tamper=True)
 run_scenario_trace("2. Invalid certificate (tampered signature)", [msg_invalid_cert], context="urban", pki_ca=CA)
 
 # 3. Expired certificate
-msg_expired = attach_pki_material(load_fixture("test_messages/benign/normal_car.json"),
+msg_expired = attach_pki_material(make_fresh(load_fixture("test_messages/benign/normal_car.json")),
                                    EXPIRED_PRIV, EXPIRED_CERT, EXPIRED_PUB)
 run_scenario_trace("3. Expired certificate", [msg_expired], context="urban", pki_ca=CA_EXPIRED)
 
 # 4. Replay attack
 replay_msgs = load_fixture("test_messages/b1_fail/replay.json")
-run_scenario_trace("4. Replay attack", replay_msgs, context="urban", expected_trust_level="CAUTION")
+run_scenario_trace("4. Replay attack", replay_msgs, context="urban", expected_trust_level="REJECT")
 
 # 5. Sybil attack
 sybil_dir = ROOT / "scenarios" / "sybil"
@@ -405,21 +412,29 @@ log("SCENARIO: 10. Conflicting evidence between layers (explicit conflict check)
 log("=" * 78)
 pipe_conflict = build_pipeline()
 window = []
+conflict_checked = False
+conflict_ok = True
+conflict_details = ""
 last_conflict_result = None
 for m in sybil_msgs:
     window.append(m)
-    last_conflict_result = pipe_conflict.run(list(window), context="urban")
-if last_conflict_result:
-    b1_clean = last_conflict_result["b1"]["valid"] and not last_conflict_result["b1"]["fatal"]
-    mbd_flagged = (last_conflict_result["mbd"] is not None and
-                   last_conflict_result["mbd"]["sybil_score"] > 0.3)
-    log(f"  B1 clean (valid, non-fatal): {b1_clean}")
-    log(f"  MBD flagged (sybil_score > 0.3): {mbd_flagged}")
-    check("Conflicting evidence is surfaced (B1 clean + MBD flags concern -> not silently ACCEPT)",
-          not (b1_clean and mbd_flagged and last_conflict_result["decision"] == "ACCEPT"),
-          f"B1_clean={b1_clean}, MBD_flagged={mbd_flagged}, final={last_conflict_result['decision']}")
-    _SCENARIO_RESULTS.append({"scenario": "10. Conflicting evidence", "final_decision": last_conflict_result["decision"],
-                               "expected": "non-ACCEPT if conflict", "match": None})
+    res = pipe_conflict.run(list(window), context="urban")
+    last_conflict_result = res
+    b1_clean = res["b1"]["valid"] and not res["b1"]["fatal"]
+    mbd_flagged = (res["mbd"] is not None and res["mbd"]["sybil_score"] > 0.3)
+    if b1_clean and mbd_flagged:
+        conflict_checked = True
+        if res["decision"] == "ACCEPT":
+            conflict_ok = False
+            conflict_details = f"Silent ACCEPT on station {res['mbd']['sender']} with sybil_score={res['mbd']['sybil_score']}"
+            break
+
+log(f"  B1 clean + MBD flagged tested: {conflict_checked}")
+check("Conflicting evidence is surfaced (B1 clean + MBD flags concern -> not silently ACCEPT)",
+      conflict_checked and conflict_ok,
+      conflict_details if not conflict_ok else f"Conflict correctly flagged, tested on attacker message (MBD flagged={conflict_checked})")
+_SCENARIO_RESULTS.append({"scenario": "10. Conflicting evidence", "final_decision": last_conflict_result["decision"] if last_conflict_result else None,
+                           "expected": "non-ACCEPT if conflict", "match": conflict_checked and conflict_ok})
 
 # 11. Unavailable modules (MBD and CP disabled -- simulating both being down)
 pipe_degraded = build_pipeline(enable_mbd=False, enable_cp=False)
@@ -443,7 +458,7 @@ log("=" * 78)
 log("SCENARIO: 12. Degraded confidence (sparse evidence)")
 log("=" * 78)
 pipe_sparse = build_pipeline()
-msg_sparse = load_fixture("test_messages/benign/motorcycle.json")
+msg_sparse = make_fresh(load_fixture("test_messages/benign/motorcycle.json"))
 result_sparse = pipe_sparse.run([msg_sparse], context="rural")
 log(f"  b2.confidence_calibration={result_sparse['b2']['confidence_calibration']:.3f}")
 if result_sparse["mbd"] is not None:
@@ -660,7 +675,7 @@ def build_colluding_sequence(num_colluders=4, event="FALSE_HAZARD", ca=None, pri
     msgs = []
     for i in range(num_colluders):
         m = copy.deepcopy(base_msg)
-        m["header"]["station_id"] = f"colluder_station_{9000 + i}"
+        m["header"]["station_id"] = 9000 + i
         m["_synthetic_narrative"] = event  # Mock B3 text payload flag
         if ca:
             m = attach_pki_material(m, priv, cert, pub)

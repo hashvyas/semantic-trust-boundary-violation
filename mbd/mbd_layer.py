@@ -113,7 +113,7 @@ def timestamp_check(msg: Dict[str, Any], max_age_sec: float = 5, history_store: 
             ref_time = max(max_ts, ts)
         else:
             ref_time = ts
-        return (ref_time - ts) <= max_age_sec
+        return (ref_time - ts) <= max_age_sec * 1000.0
     else:
         if ts < 1000:
             return True
@@ -246,7 +246,7 @@ def mbd_layer(
             if is_offline:
                 max_ts = max((h[-1]["timestamp"] for h in history_store._history.values() if h), default=ts)
                 age = max_ts - ts
-                age_score = max(0.0, 1.0 - age / 5.0)
+                age_score = max(0.0, 1.0 - age / 5000.0)
             else:
                 if ts < 1000 or ts > 1_000_000_000:
                     age_score = 1.0
@@ -339,7 +339,7 @@ def mbd_layer(
         if len(other_history) == 0:
             continue
         prev_msg = other_history[-1]
-        if abs(prev_msg["timestamp"] - ts_now) < 1.0:
+        if abs(prev_msg["timestamp"] - ts_now) < 1000.0:
             dist = ((prev_msg["x"] - msg["x"]) ** 2 + (prev_msg["y"] - msg["y"]) ** 2) ** 0.5
             if dist < 2.0:
                 sim = max(0.0, 1.0 - dist / 2.0)
@@ -354,7 +354,7 @@ def mbd_layer(
             if other_sender == sender_id:
                 continue
             for prev_msg in other_history:
-                if abs(prev_msg["timestamp"] - ts_now) < 5.0:
+                if abs(prev_msg["timestamp"] - ts_now) < 5000.0:
                     dist = ((prev_msg["x"] - msg["x"]) ** 2 + (prev_msg["y"] - msg["y"]) ** 2) ** 0.5
                     if dist < 100.0 and prev_msg.get("event") == event:
                         co_reporters += 1

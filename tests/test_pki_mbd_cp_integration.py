@@ -30,7 +30,7 @@ def check(name, condition):
 
 
 # ============================================================
-# Backward compatibility: default-mode pipeline is UNCHANGED
+# Default-mode pipeline has MBD and CP enabled by default
 # ============================================================
 from pipeline.orchestrator import ISCEPipeline
 
@@ -38,9 +38,15 @@ pipe_default = ISCEPipeline()
 msg = json.load(open(ROOT / "test_messages/benign/normal_car.json"))
 res = pipe_default.run([msg])
 check("Default pipeline: pki key is None (PKI not silently faked)", res["pki"] is None)
-check("Default pipeline: mbd key is None (MBD disabled by default)", res["mbd"] is None)
-check("Default pipeline: cp key is None (CP disabled by default)", res["cp"] is None)
-check("Default pipeline: decision still ACCEPT for benign fixture", res["decision"] == "ACCEPT")
+check("Default pipeline: mbd key is not None (MBD enabled by default)", res["mbd"] is not None)
+check("Default pipeline: cp key is not None (CP enabled by default)", res["cp"] is not None)
+
+# Explicitly test backward-compatibility by disabling MBD/CP
+pipe_disabled = ISCEPipeline(enable_mbd=False, enable_cp=False)
+res_disabled = pipe_disabled.run([msg])
+check("Disabled pipeline: mbd key is None", res_disabled["mbd"] is None)
+check("Disabled pipeline: cp key is None", res_disabled["cp"] is None)
+check("Disabled pipeline: decision is ACCEPT for benign fixture", res_disabled["decision"] == "ACCEPT")
 
 
 # ============================================================

@@ -22,6 +22,8 @@ DEFAULT_CHECK_DESCRIPTIONS: Dict[str, str] = {
     "cert_rotation_anomaly": "Certificate rotation-rate anomaly check.",
     "signature": "Cryptographic signature verification.",
     "revocation": "Certificate revocation status check.",
+    "pki_signature": "Cryptographic signature verification.",
+    "pki_revocation": "Certificate revocation status check.",
     "structural": "Message structural/schema validation.",
     "protocol_compliance": "Protocol compliance check against the message standard.",
 }

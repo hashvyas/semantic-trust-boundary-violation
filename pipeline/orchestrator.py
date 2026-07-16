@@ -111,8 +111,8 @@ class ISCEPipeline:
         trust_policy: Optional[TrustPolicy] = None,
         csia: Optional[Any] = None,
         adapters: Optional[Dict[str, Adapter]] = None,
-        enable_mbd: bool = False,
-        enable_cp: bool = False,
+        enable_mbd: bool = True,
+        enable_cp: bool = True,
         pki_ca: Optional[Any] = None,
     ) -> None:
         """
@@ -285,6 +285,18 @@ class ISCEPipeline:
             b1_dict["checks"]["pki_signature"] = pki_result["sig_valid"]
             b1_dict["checks"]["pki_revocation"] = not pki_result["revoked"]
             b1_dict["details"]["pki_compromised_flag"] = pki_result["compromised"]
+            
+            # Propagate PKI failure to B1 validation status
+            if not pki_result["pki_pass"]:
+                b1_dict["valid"] = False
+                b1_dict["fatal"] = True
+                b1_dict["score"] = 0.0
+                if not pki_result["sig_valid"]:
+                    b1_dict["reasons"].append("PKI signature verification failed")
+                if pki_result["revoked"]:
+                    b1_dict["reasons"].append("PKI certificate revoked")
+                if not pki_result["cert_valid"]:
+                    b1_dict["reasons"].append("PKI certificate expired or invalid")
 
         # 2. Run MBD (opt-in)
         t_mbd_start = time.perf_counter()
