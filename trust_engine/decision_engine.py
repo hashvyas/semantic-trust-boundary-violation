@@ -115,14 +115,10 @@ class TrustDecisionEngine:
             raise MissingLayerInputError("TrustDecisionEngine.decide: semantic_result (B3) is required.")
 
         b1_fatal = bool(validation_assessment.get("fatal", False))
-        b1_valid = bool(validation_assessment.get("valid", True))
-        b1_score = float(explainability_report.get("validation_score", validation_assessment.get("score", 1.0)))
         b1_reasons = validation_assessment.get("reasons") or []
 
-        semantic_risk = self.policy.classify_semantic_risk(semantic_result)
-
-        # Rule 1: B1 fatal -> REJECT regardless of B3. B3 is explicitly not
-        # consulted on this path, so it must not appear in contributors.
+        # Rule 1: B1 fatal -> REJECT regardless of B3. Downstream layers never
+        # execute, so contributors contains B1 only, and no trust fusion is done.
         if b1_fatal:
             return FinalTrustDecision(
                 trust_score=0.0,
@@ -136,12 +132,15 @@ class TrustDecisionEngine:
                     f"({', '.join(b1_reasons) if b1_reasons else 'unspecified'}). "
                     f"B3 semantic result not consulted, per policy."
                 ),
-                contributors=["B1", "B2"],
+                contributors=["B1"],
                 details={
-                    "b1_score": b1_score,
-                    "explanation": explainability_report.get("explanation_text"),
+                    "b1_score": float(validation_assessment.get("score", 0.0)),
                 },
             )
+
+        b1_valid = bool(validation_assessment.get("valid", True))
+        b1_score = float(explainability_report.get("validation_score", validation_assessment.get("score", 1.0)))
+        semantic_risk = self.policy.classify_semantic_risk(semantic_result)
 
         contributors = ["B1", "B2"]
         if "CP" in explainability_report.get("provenance", {}).get("source_layers", []):

@@ -1126,9 +1126,12 @@ def main():
             else:
                 summary["failed"] += 1
                 
-            b1_latencies.append(latencies["b1_ms"])
-            b2_latencies.append(latencies["b2_ms"])
-            total_latencies.append(latencies["total_ms"])
+            if latencies.get("b1_ms") is not None:
+                b1_latencies.append(latencies["b1_ms"])
+            if latencies.get("b2_ms") is not None:
+                b2_latencies.append(latencies["b2_ms"])
+            if latencies.get("total_ms") is not None:
+                total_latencies.append(latencies["total_ms"])
             
             if args.log:
                 logs.append({
@@ -1143,7 +1146,22 @@ def main():
                 print("="*50)
                 print(f"B1 Valid:           {b1_res['valid']}")
                 print(f"B1 Fatal:           {b1_res['fatal']}")
-                print(f"B2 Trust:           {b2_res.get('trust', 1.0):.4f}")
+                
+                # Check for early termination
+                if pipeline_result.get("pipeline_status") == "Terminated":
+                    print(f"Pipeline Status:    Terminated")
+                    print(f"Termination Layer:  {pipeline_result.get('termination_layer')}")
+                    print("Skipped Layers:")
+                    for layer in pipeline_result.get("skipped_layers", []):
+                        print(f"  - {layer}")
+                    print(f"B2 Status:          {b2_res.get('status')}")
+                    print(f"B2 Trust:           {b2_res.get('trust')}")
+                    print(f"B2 Confidence:      {b2_res.get('confidence')}")
+                else:
+                    b2_trust = b2_res.get('trust', 1.0)
+                    b2_trust_str = f"{b2_trust:.4f}" if b2_trust is not None else "None"
+                    print(f"B2 Trust:           {b2_trust_str}")
+                    
                 print(f"Synthesized Message: {pipeline_result['synthesized_message']['text']}")
                 print(f"B3 Available:       {b3_res['available']}")
                 print(f"B3 Status:          {b3_res['status']}")

@@ -298,6 +298,77 @@ class ISCEPipeline:
                 if not pki_result["cert_valid"]:
                     b1_dict["reasons"].append("PKI certificate expired or invalid")
 
+        # Check if B1 has already failed validation fatally (malformed or unrecoverable error).
+        # B1 is the trust boundary. Downstream layers assume structurally valid messages.
+        # Fatal B1 failures intentionally terminate the pipeline immediately to prevent
+        # downstream analytical layers (MBD, B2, CP, B3) from executing.
+        is_b1_fatal = bool(b1_dict.get("fatal", False))
+        if is_b1_fatal:
+            mbd_dict = None
+            b2_dict = {
+                "explanation_text": "Skipped (B1 fatal)",
+                "evidence": [],
+                "confidence_calibration": None,
+                "provenance": {
+                    "source_layers": [],
+                    "layer_count": 0,
+                },
+                "validation_valid": False,
+                "validation_score": None,
+                "status": "Skipped (B1 fatal)",
+                "trust": None,
+                "confidence": None,
+            }
+            cp_dict = None
+            synthesized_message = {"text": "skipped (B1 fatal)"}
+            b3_result = {
+                "available": False,
+                "label": None,
+                "confidence": None,
+                "risk_level": "unavailable",
+                "status": "skipped (B1 fatal)",
+            }
+            
+            t_fuse_start = time.perf_counter()
+            final_decision = self.trust_engine.decide(b1_dict, b2_dict, b3_result)
+            fuse_ms = (time.perf_counter() - t_fuse_start) * 1000.0
+            
+            total_ms = (time.perf_counter() - t_total_start) * 1000.0
+            decision_dict = final_decision.to_dict()
+            
+            adapted: Dict[str, Any] = {}
+            for name, adapter in self.adapters.items():
+                adapted[name] = adapter.adapt(final_decision)
+                
+            return {
+                "pki": pki_result,
+                "b1": b1_dict,
+                "mbd": mbd_dict,
+                "b2": b2_dict,
+                "cp": cp_dict,
+                "synthesized_message": synthesized_message,
+                "b3": b3_result,
+                "decision": decision_dict["trust_level"],
+                "reason": decision_dict["reasoning"],
+                "fusion": decision_dict,
+                "final_trust_decision": final_decision,
+                "adapted": adapted,
+                "pipeline_status": "Terminated",
+                "termination_layer": "B1 (Fatal Validation Failure)",
+                "skipped_layers": ["MBD", "B2", "CP", "B3"],
+                "latencies": {
+                    "pki_ms": pki_ms,
+                    "b1_ms": b1_ms,
+                    "mbd_ms": None,
+                    "b2_ms": None,
+                    "cp_ms": None,
+                    "synthesizer_ms": None,
+                    "bridge_ms": None,
+                    "fusion_ms": fuse_ms,
+                    "total_ms": total_ms
+                }
+            }
+
         # 2. Run MBD (opt-in)
         t_mbd_start = time.perf_counter()
         mbd_dict: Optional[Dict[str, Any]] = None
@@ -307,8 +378,7 @@ class ISCEPipeline:
 
         # 3. Run B2 (Explainability) — ALWAYS runs, including on B1-fatal
         #    paths. Uses explain_evidence([B1,MBD]) when MBD is enabled,
-        #    otherwise the original explain(B1) path -- UNCHANGED when
-        #    enable_mbd=False, per the backward-compatibility requirement.
+        #    otherwise the original explain(B1) path.
         t_b2_start = time.perf_counter()
         if mbd_dict is not None:
             evidence = [

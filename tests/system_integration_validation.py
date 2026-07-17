@@ -253,8 +253,12 @@ def run_scenario_trace(
         else:
             log("  [MBD]    <disabled for this run>")
 
-        log(f"  [B2]     valid={result['b2']['validation_valid']} score={result['b2']['validation_score']:.3f} "
-            f"confidence_calibration={result['b2']['confidence_calibration']:.3f}")
+        b2_score = result["b2"]["validation_score"]
+        b2_score_str = f"{b2_score:.3f}" if b2_score is not None else "None"
+        b2_conf = result["b2"]["confidence_calibration"]
+        b2_conf_str = f"{b2_conf:.3f}" if b2_conf is not None else "None"
+        log(f"  [B2]     valid={result['b2']['validation_valid']} score={b2_score_str} "
+            f"confidence_calibration={b2_conf_str}")
         log(f"           explanation: {result['b2']['explanation_text'][:150]}")
         verify_contract("B2 (ExplainabilityReport)", result["b2"], EXPLAINABILITY_REPORT_KEYS)
 

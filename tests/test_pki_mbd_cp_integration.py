@@ -304,6 +304,44 @@ check("A1: poor CP fusion confidence degrades trust vs good CP",
        _d_bad.trust_level != _TL.ACCEPT or _d_bad.trust_score < _d_good.trust_score)
 check("A1: CP appears in contributors when folded in", "CP" in _d_bad.contributors)
 
+# ============================================================
+# Regression test: Fatal B1 short-circuits and skips downstream analytical layers
+# ============================================================
+def test_b1_fatal_short_circuit():
+    pipe = ISCEPipeline()
+    
+    # Mock downstream layers to raise an exception if they are executed
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("Downstream analytical layer executed after fatal B1 rejection!")
+        
+    pipe._run_mbd = fail_if_called
+    pipe._run_cp = fail_if_called
+    pipe.b2.explain = fail_if_called
+    pipe.b2.explain_evidence = fail_if_called
+    
+    malformed_msg = json.load(open(ROOT / "test_messages/b1_fail/malformed.json"))
+    res = pipe.run([malformed_msg])
+    
+    check("Short-circuit: decision is REJECT", res["decision"] == "REJECT")
+    check("Short-circuit: contributors is B1 only", res["fusion"]["contributors"] == ["B1"])
+    check("Short-circuit: MBD is None", res["mbd"] is None)
+    check("Short-circuit: CP is None", res["cp"] is None)
+    check("Short-circuit: B2 status is skipped", res["b2"]["status"] == "Skipped (B1 fatal)")
+    check("Short-circuit: B3 status is skipped", res["b3"]["status"] == "skipped (B1 fatal)")
+    check("Short-circuit: B2 Trust is None", res["b2"]["trust"] is None)
+    check("Short-circuit: pipeline_status is Terminated", res["pipeline_status"] == "Terminated")
+    check("Short-circuit: termination_layer is B1", res["termination_layer"] == "B1 (Fatal Validation Failure)")
+    check("Short-circuit: skipped_layers is correct list", res["skipped_layers"] == ["MBD", "B2", "CP", "B3"])
+    
+    lat = res["latencies"]
+    check("Short-circuit latency: mbd_ms is None", lat["mbd_ms"] is None)
+    check("Short-circuit latency: b2_ms is None", lat["b2_ms"] is None)
+    check("Short-circuit latency: cp_ms is None", lat["cp_ms"] is None)
+    check("Short-circuit latency: synthesizer_ms is None", lat["synthesizer_ms"] is None)
+    check("Short-circuit latency: bridge_ms is None", lat["bridge_ms"] is None)
+
+test_b1_fatal_short_circuit()
+
 print()
 if _FAILURES:
     print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
