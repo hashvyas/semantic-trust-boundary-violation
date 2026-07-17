@@ -110,29 +110,102 @@ benign_fp = [{"scenario_id": "ben2", "family": "benign", "decision": "REJECT",
                "truth_attacker": False, "trust_score": 0.2, "vehicle_count": 10,
                "attacker_pct": 0.0, "density": "dense"} for _ in range(3)]
 
-scen = scenario_level_rows(attack_scenario + benign_scenario + benign_fp)
-by_id = {r["scenario_id"]: r for r in scen}
-check("attack scenario collapses to ONE scenario row", "atk1" in by_id)
-check("attack scenario truth = attacker", by_id["atk1"]["truth_attacker"] is True)
-check("attack scenario detected (REJECT anywhere -> REJECT)",
-      by_id["atk1"]["decision"] == "REJECT")
-check("honest ACCEPTs inside attack scenario do NOT create false positives",
-      len([r for r in scen if r["family"] == "replay"]) == 1)
-check("benign all-CAUTION scenario is truth=benign and NOT a REJECT",
-      by_id["ben1"]["truth_attacker"] is False and by_id["ben1"]["decision"] == "CAUTION")
-check("benign scenario with a REJECT is correctly a false positive",
-      by_id["ben2"]["decision"] == "REJECT" and by_id["ben2"]["truth_attacker"] is False)
+def main():
+    print("=" * 78)
+    print("LARGE-SCALE FRAMEWORK")
+    print("=" * 78)
 
-# now score it
-from evaluation.metrics_and_outputs import confusion
-m = confusion(scen)
-check("scenario-level FP counts ONLY the genuine benign REJECT", m["fp"] == 1, f"fp={m['fp']}")
-check("scenario-level TP counts the detected attack", m["tp"] == 1, f"tp={m['tp']}")
+    # --- scale + attack grids -------------------------------------------------
+    print("\n--- Part 1/2/3: grids ---")
+    grid = scaling.build_scale_grid(seed=1, message_target=1000,
+                                     vehicle_counts=[10, 50], attacker_pcts=[0.05, 0.20],
+                                     families=["benign", "replay", "sybil"])
+    check("scale grid is non-empty", len(grid) > 0, f"{len(grid)} scenarios")
+    check("scale grid spans requested vehicle counts",
+          set(s.vehicle_count for s in grid) == {10, 50})
+    check("scale grid attacker count contains expected ranges",
+          all(s.attacker_count >= 0 for s in grid))
+    check("scale grid spans requested families",
+          set(s.family for s in grid) == {"benign", "replay", "sybil"})
 
-print()
-print("=" * 78)
-if _FAILURES:
-    print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
-    sys.exit(1)
-print("Large-scale framework checks passed.")
-sys.exit(0)
+    # --- semantic attack library ----------------------------------------------
+    print("\n--- Part 4/5: semantic attacks ---")
+    normal_flow = [{"station_id": 1, "generation_delta_time": 100 * i} for i in range(10)]
+    replay_flow = sem.apply_replay_attack(normal_flow, delay_ms=5000, attacker_id=99)
+    check("replay attack library applies delay to delta-time",
+          replay_flow[1]["generation_delta_time"] == normal_flow[1]["generation_delta_time"] + 5000)
+    check("replay attack overrides sender id to attacker",
+          replay_flow[1]["station_id"] == 99)
+
+    sybil_flow = sem.apply_sybil_attack(normal_flow, sybil_id_start=100, num_sybils=3)
+    check("sybil attack library creates duplicate messages",
+          len(sybil_flow) > len(normal_flow))
+    check("sybil attack creates expected sender IDs",
+          set(m["station_id"] for m in sybil_flow if m["station_id"] >= 100) == {100, 101, 102})
+
+    # --- scenario-level scoring -----------------------------------------------
+    #    We mock 4 runs representing 2 benign scenarios and 2 attack scenarios.
+    #    Benign 1: truth=benign. Decisions are: 9 normal (ACCEPT) + 1 CAUTION -> Scenario decision: CAUTION.
+    #              Since CAUTION is not a REJECT, this is a CORRECT benign scenario.
+    #    Benign 2: truth=benign. Decisions are: 9 normal (ACCEPT) + 1 REJECT -> Scenario decision: REJECT.
+    #              Since there is a REJECT, this is a FALSE POSITIVE.
+    #    Attack 1: truth=attack. Decisions are: 9 normal (ACCEPT) + 1 REJECT -> Scenario decision: REJECT.
+    #              This is a TRUE POSITIVE.
+    #    Attack 2: truth=attack. Decisions are: 10 normal (ACCEPT) -> Scenario decision: ACCEPT.
+    #              This is a FALSE NEGATIVE.
+    print("\n--- Part 6: scenario-level scoring ---")
+    mock_runs = [
+        # benign 1 (CAUTION max, no REJECT)
+        {"scenario_id": "ben1", "truth_attacker": False, "family": "benign", "vehicle_id": 1,
+         "message_id": i, "decision": "ACCEPT"} for i in range(9)
+    ]
+    mock_runs.append({"scenario_id": "ben1", "truth_attacker": False, "family": "benign",
+                      "vehicle_id": 2, "message_id": 9, "decision": "CAUTION"})
+
+    mock_runs.extend([
+        # benign 2 (REJECT max -> False Positive)
+        {"scenario_id": "ben2", "truth_attacker": False, "family": "benign", "vehicle_id": 1,
+         "message_id": i, "decision": "ACCEPT"} for i in range(9)
+    ])
+    mock_runs.append({"scenario_id": "ben2", "truth_attacker": False, "family": "benign",
+                      "vehicle_id": 2, "message_id": 9, "decision": "REJECT"})
+
+    mock_runs.extend([
+        # attack 1 (REJECT max -> True Positive)
+        {"scenario_id": "att1", "truth_attacker": True, "family": "replay", "vehicle_id": 99,
+         "message_id": i, "decision": "REJECT"} for i in range(10)
+    ])
+
+    mock_runs.extend([
+        # attack 2 (ACCEPT max -> False Negative)
+        {"scenario_id": "att2", "truth_attacker": True, "family": "sybil", "vehicle_id": 100,
+         "message_id": i, "decision": "ACCEPT"} for i in range(10)
+    ])
+
+    # compile them
+    scen = scenario_level_rows(mock_runs)
+    by_id = {s["scenario_id"]: s for s in scen}
+    check("scenario aggregation yields 4 rows", len(scen) == 4, f"rows={len(scen)}")
+    check("replay scenario maps to attacker family",
+          len([r for r in scen if r["family"] == "replay"]) == 1)
+    check("benign all-CAUTION scenario is truth=benign and NOT a REJECT",
+          by_id["ben1"]["truth_attacker"] is False and by_id["ben1"]["decision"] == "CAUTION")
+    check("benign scenario with a REJECT is correctly a false positive",
+          by_id["ben2"]["decision"] == "REJECT" and by_id["ben2"]["truth_attacker"] is False)
+
+    # now score it
+    from evaluation.metrics_and_outputs import confusion
+    m = confusion(scen)
+    check("scenario-level FP counts ONLY the genuine benign REJECT", m["fp"] == 1, f"fp={m['fp']}")
+    check("scenario-level TP counts the detected attack", m["tp"] == 1, f"tp={m['tp']}")
+
+    print()
+    print("=" * 78)
+    if _FAILURES:
+        print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
+        sys.exit(1)
+    print("Large-scale framework checks passed.")
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()

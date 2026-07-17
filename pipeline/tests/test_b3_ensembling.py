@@ -63,8 +63,25 @@ def test_pipeline_ensembling_logic(mock_synthesize, mock_classify):
         mock_classifier_instance.risk_policy = mock_policy
         
         # Run orchestrator
+        msg = {
+            "station_id": 1001,
+            "latitude": 0.0,
+            "longitude": 0.0,
+            "speed": 0.0,
+            "heading": 0.0,
+            "timestamp": 0.0,
+            "_validation_assessment": {
+                "valid": True,
+                "fatal": False,
+                "score": 1.0,
+                "confidence": 1.0,
+                "reasons": [],
+                "checks": {},
+                "details": {}
+            }
+        }
         res = pipeline.run(
-            messages=[{"station_id": 1001, "latitude": 0, "longitude": 0}], 
+            messages=[msg], 
             context="urban"
         )
         

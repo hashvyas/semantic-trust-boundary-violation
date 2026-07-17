@@ -105,21 +105,14 @@ def speed_check(msg: Dict[str, Any]) -> bool:
 
 
 def timestamp_check(msg: Dict[str, Any], max_age_sec: float = 5, history_store: Optional[VehicleHistoryStore] = None) -> bool:
-    ts = msg.get("timestamp", 0)
-    is_offline = 1000 <= ts <= 1_000_000_000
-    if is_offline:
-        if history_store is not None:
-            max_ts = max((h[-1]["timestamp"] for h in history_store._history.values() if h), default=ts)
-            ref_time = max(max_ts, ts)
-        else:
-            ref_time = ts
-        return (ref_time - ts) <= max_age_sec * 1000.0
+    from contracts.timestamp import is_fresh
+    ts = int(msg.get("timestamp", 0))
+    if history_store is not None:
+        max_ts = max((int(h[-1]["timestamp"]) for h in history_store._history.values() if h), default=ts)
+        ref_time = max(max_ts, ts)
     else:
-        if ts < 1000:
-            return True
-        if ts > 1_000_000_000:
-            return True
-        return abs(ts - time.time()) <= max_age_sec
+        ref_time = ts
+    return is_fresh(ref_time, ts, max_age_sec * 1000.0)
 
 
 def position_check(msg: Dict[str, Any], bound: float = 100_000) -> bool:
@@ -241,18 +234,14 @@ def mbd_layer(
             temporal_consistency = 0.0
             evidence.append(f"Chronology violation: timestamp delta {dt} is non-positive.")
         else:
-            ts = msg.get("timestamp", 0)
-            is_offline = 1000 <= ts <= 1_000_000_000
-            if is_offline:
-                max_ts = max((h[-1]["timestamp"] for h in history_store._history.values() if h), default=ts)
-                age = max_ts - ts
-                age_score = max(0.0, 1.0 - age / 5000.0)
-            else:
-                if ts < 1000 or ts > 1_000_000_000:
-                    age_score = 1.0
-                else:
-                    age = abs(ts - time.time())
-                    age_score = max(0.0, 1.0 - age / 5.0)
+            ts = int(msg.get("timestamp", 0))
+            max_ts = max((int(h[-1]["timestamp"]) for h in history_store._history.values() if h), default=ts)
+            from contracts.timestamp import compute_age
+            try:
+                age = compute_age(max_ts, ts)
+            except ValueError:
+                age = 0
+            age_score = max(0.0, 1.0 - age / 5000.0)
             temporal_consistency = round(age_score, 3)
 
     # Replay check (Fix 3)

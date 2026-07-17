@@ -201,7 +201,13 @@ class ISCEPipeline:
         station_id = flat["sender"]
         cert_rotation_anomaly = None
         if self.scsv._cert_rotation_owner == "mbd":
-            cert_rotation_anomaly = self.scsv.check_cert_rotation_for_station(station_id)
+            ts = flat.get("timestamp", 0)
+            if self._mbd_history is not None:
+                max_hist_ts = max((h[-1]["timestamp"] for h in self._mbd_history._history.values() if h), default=ts)
+                ref_ts = max(max_hist_ts, ts)
+            else:
+                ref_ts = ts
+            cert_rotation_anomaly = self.scsv.check_cert_rotation_for_station(station_id, current_time_sec=ref_ts / 1000.0)
 
         return dict(mbd_layer(flat, self._mbd_history, cert_rotation_anomaly=cert_rotation_anomaly))
 
@@ -276,7 +282,16 @@ class ISCEPipeline:
         if target_msg.get("_validation_assessment") is not None:
             b1_res = target_msg["_validation_assessment"]
         else:
-            b1_res = self.scsv.check_stateful(target_msg)
+            # Determine the scenario time from the window of messages
+            max_ts = 0
+            for m in messages:
+                ts = m.get("timestamp") or m.get("cam", {}).get("generation_delta_time")
+                if ts is not None:
+                    try:
+                        max_ts = max(max_ts, int(ts))
+                    except (ValueError, TypeError):
+                        pass
+            b1_res = self.scsv.check_stateful(target_msg, scenario_time_ms=max_ts)
         b1_ms = (time.perf_counter() - t_b1_start) * 1000.0
 
         b1_dict = _normalize_b1_result(b1_res)

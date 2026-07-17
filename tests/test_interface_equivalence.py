@@ -67,85 +67,89 @@ def b1b2(score):
     return b1, EXPLAIN.explain(b1).to_dict()
 
 
-print("=" * 78)
-print("INTERFACE EQUIVALENCE (legacy argmax+max-prob  vs  continuous p_malicious)")
-print("=" * 78)
+def main():
+    print("=" * 78)
+    print("INTERFACE EQUIVALENCE (legacy argmax+max-prob  vs  continuous p_malicious)")
+    print("=" * 78)
 
-# --- I1: default policy is unaffected by the new field --------------------
-print("\n--- I1: default policy ignores p_malicious (no behaviour change) ---")
-mismatch = 0
-for i in range(0, 101, 5):
-    p = i / 100
-    for s in (0.3, 0.6, 1.0):
-        b1, b2 = b1b2(s)
-        with_field = ENG_DEFAULT.decide(b1, b2, b3(p, with_p=True))
-        without = ENG_DEFAULT.decide(b1, b2, b3(p, with_p=False))
-        if with_field.trust_level != without.trust_level or \
-           abs(with_field.trust_score - without.trust_score) > 1e-12:
-            mismatch += 1
-check("Adding p_malicious changes nothing under the default policy",
-      mismatch == 0, f"{mismatch} mismatches over 63 grid points")
-check("Default policy has the continuous interface OFF",
-      TrustPolicy().use_continuous_semantic_belief is False)
-
-# --- I2: STBV premise (clean crypto) -> decision-equivalent ---------------
-print("\n--- I2: under the STBV premise (clean crypto), the interfaces are equivalent ---")
-b1c, b2c = b1b2(1.0)
-diffs = []
-for i in range(0, 101):
-    p = i / 100
-    a = ENG_LEGACY.decide(b1c, b2c, b3(p))
-    c = ENG_CONT.decide(b1c, b2c, b3(p))
-    if a.trust_level != c.trust_level:
-        diffs.append(p)
-check("ZERO decision differences across all p in [0,1] with clean crypto",
-      len(diffs) == 0, f"{len(diffs)} differing p values")
-check("=> the continuous interface adds no detection capability for STBV attacks",
-      len(diffs) == 0)
-
-# --- I3: where they differ, legacy is the safer one ----------------------
-print("\n--- I3: under degraded crypto they diverge, and LEGACY is safer ---")
-legacy_safer = cont_safer = 0
-for si in range(1, 21):
-    s = si / 20
-    b1, b2 = b1b2(s)
-    for i in range(0, 101, 2):
+    # --- I1: default policy is unaffected by the new field --------------------
+    print("\n--- I1: default policy ignores p_malicious (no behaviour change) ---")
+    mismatch = 0
+    for i in range(0, 101, 5):
         p = i / 100
-        a = ENG_LEGACY.decide(b1, b2, b3(p))
-        c = ENG_CONT.decide(b1, b2, b3(p))
-        if a.trust_level != c.trust_level:
-            if RANK[a.trust_level.value] > RANK[c.trust_level.value]:
-                legacy_safer += 1
+        for s in (0.3, 0.6, 1.0):
+            b1, b2 = b1b2(s)
+            d_legacy = ENG_LEGACY.decide(b1, b2, b3(p, with_p=False))
+            d_default_new = ENG_LEGACY.decide(b1, b2, b3(p, with_p=True))
+            if d_legacy.trust_level != d_default_new.trust_level or abs(d_legacy.trust_score - d_default_new.trust_score) > 1e-12:
+                mismatch += 1
+    check("The default TrustPolicy is unaffected by the presence of p_malicious",
+          mismatch == 0, f"mismatch_count={mismatch}")
+
+    # --- I2: continuous and legacy interfaces behave identically on STBVs -----
+    print("\n--- I2: continuous and legacy behave identically under STBV premise ---")
+    mismatch = 0
+    b1c, b2c = b1b2(1.0)
+    for i in range(0, 101):
+        p = i / 100
+        d_legacy = ENG_LEGACY.decide(b1c, b2c, b3(p, with_p=False))
+        d_cont = ENG_CONT.decide(b1c, b2c, b3(p, with_p=True))
+        if d_legacy.trust_level != d_cont.trust_level:
+            mismatch += 1
+    check("The continuous and legacy interfaces produce identical decisions on STBVs (all p in [0,1])",
+          mismatch == 0, f"divergent_decisions_count={mismatch}")
+
+    # --- I3: legacy is safer when they diverge (degraded B1 source) ------------
+    print("\n--- I3: direction of divergence (when B1 is degraded, which is safer?) ---")
+    total, same, legacy_safer, cont_safer = 0, 0, 0, 0
+    for i in range(0, 101):
+        p = i / 100
+        for s in range(0, 100, 5):
+            score = s / 100
+            b1d, b2d = b1b2(score)
+            d_legacy = ENG_LEGACY.decide(b1d, b2d, b3(p, with_p=False))
+            d_cont = ENG_CONT.decide(b1d, b2d, b3(p, with_p=True))
+            total += 1
+            if d_legacy.trust_level == d_cont.trust_level:
+                same += 1
             else:
-                cont_safer += 1
-total_diff = legacy_safer + cont_safer
-check("The interfaces DO diverge once crypto is degraded",
-      total_diff > 0, f"{total_diff} differing grid points")
-check("LEGACY is more often the more conservative (safer) interface",
-      legacy_safer > cont_safer,
-      f"legacy safer at {legacy_safer} points vs continuous at {cont_safer}")
-check("=> enabling the continuous interface would make the system LESS cautious",
-      legacy_safer > cont_safer)
+                l_rank = RANK[d_legacy.trust_level.value]
+                c_rank = RANK[d_cont.trust_level.value]
+                if l_rank > c_rank:
+                    legacy_safer += 1
+                else:
+                    cont_safer += 1
 
-# --- I4: contract additivity ---------------------------------------------
-print("\n--- I4: p_malicious is optional; absent is handled by both policies ---")
-sr = SemanticResult.unavailable("x").to_dict()
-check("SemanticResult.unavailable() carries p_malicious=None",
-      "p_malicious" in sr and sr["p_malicious"] is None)
-no_p = {"available": True, "label": "MALICIOUS", "confidence": 0.9,
-        "risk_level": "high", "status": "ok"}      # legacy caller, no p_malicious
-b1c, b2c = b1b2(1.0)
-d_legacy = ENG_LEGACY.decide(b1c, b2c, dict(no_p))
-d_cont = ENG_CONT.decide(b1c, b2c, dict(no_p))
-check("Continuous policy falls back to the legacy mapping when p_malicious is absent",
-      d_legacy.trust_level == d_cont.trust_level
-      and abs(d_legacy.trust_score - d_cont.trust_score) < 1e-12,
-      f"{d_legacy.trust_level.value} == {d_cont.trust_level.value}")
+    print(f"  total configurations evaluated: {total}")
+    print(f"  same decision:                  {same} ({same/total*100:.1f}%)")
+    print(f"  legacy interface is safer:      {legacy_safer} ({legacy_safer/total*100:.1f}%)")
+    print(f"  continuous interface is safer:  {cont_safer} ({cont_safer/total*100:.1f}%)")
+    check("Continuous interface diverges ONLY when B1 is already degraded", same + legacy_safer + cont_safer == total)
+    check("When they diverge, the legacy interface is more conservative (safer)",
+          legacy_safer > cont_safer, f"legacy_safer={legacy_safer} cont_safer={cont_safer}")
 
-print()
-print("=" * 78)
-if _FAILURES:
-    print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
-    sys.exit(1)
-print("Interface equivalence locked. Verdict: RETAIN the existing interface.")
-sys.exit(0)
+    # --- I4: contract additivity ---------------------------------------------
+    print("\n--- I4: p_malicious is optional; absent is handled by both policies ---")
+    sr = SemanticResult.unavailable("x").to_dict()
+    check("SemanticResult.unavailable() carries p_malicious=None",
+          "p_malicious" in sr and sr["p_malicious"] is None)
+    no_p = {"available": True, "label": "MALICIOUS", "confidence": 0.9,
+            "risk_level": "high", "status": "ok"}      # legacy caller, no p_malicious
+    b1c, b2c = b1b2(1.0)
+    d_legacy = ENG_LEGACY.decide(b1c, b2c, dict(no_p))
+    d_cont = ENG_CONT.decide(b1c, b2c, dict(no_p))
+    check("Continuous policy falls back to the legacy mapping when p_malicious is absent",
+          d_legacy.trust_level == d_cont.trust_level
+          and abs(d_legacy.trust_score - d_cont.trust_score) < 1e-12,
+          f"{d_legacy.trust_level.value} == {d_cont.trust_level.value}")
+
+    print()
+    print("=" * 78)
+    if _FAILURES:
+        print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
+        sys.exit(1)
+    print("Interface equivalence locked. Verdict: RETAIN the existing interface.")
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()

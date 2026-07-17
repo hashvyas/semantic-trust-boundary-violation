@@ -128,7 +128,7 @@ class CamMessage:
     station_id: Optional[int] = None
     message_id: Optional[int] = None
     station_type: Optional[int] = None
-    timestamp: Optional[float] = None
+    timestamp: Optional[int] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     speed: Optional[float] = None
@@ -395,7 +395,7 @@ def safe_parse_cam(raw: Any) -> Tuple[Optional[CamMessage], Optional[str]]:
             station_id=int(raw["sender"]),
             message_id=1,
             station_type=5,
-            timestamp=float(raw["timestamp"]),
+            timestamp=int(float(raw["timestamp"])),
             latitude=float(raw["y"]),
             longitude=float(raw["x"]),
             speed=float(raw["speed"]),
@@ -426,7 +426,12 @@ def safe_parse_cam(raw: Any) -> Tuple[Optional[CamMessage], Optional[str]]:
         cam = {}
         warnings.append("cam: not a dict")
 
-    timestamp = _safe_float(cam.get("generation_delta_time"), "cam.generation_delta_time", warnings)
+    raw_ts = cam.get("generation_delta_time")
+    timestamp = None
+    if raw_ts is not None:
+        parsed_ts = _safe_float(raw_ts, "cam.generation_delta_time", warnings)
+        if parsed_ts is not None:
+            timestamp = int(parsed_ts)
 
     # ── cam_parameters ────────────────────────────────────────────────────
     cp = cam.get("cam_parameters") or {}

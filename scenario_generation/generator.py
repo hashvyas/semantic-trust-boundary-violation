@@ -175,7 +175,7 @@ class HeldOutScenarioGenerator:
                 vehicles[idx]["is_attacker"] = True
 
         messages: List[Dict[str, Any]] = []
-        base_ts_ms = 4000.0 + self.rng.randint(100, 100000)
+        base_ts_ms = 0
 
         # Track rolling updates per vehicle to compute smooth trajectories
         # and support stateful SCSV kinematics tracking
@@ -205,9 +205,10 @@ class HeldOutScenarioGenerator:
                     state["yaw_rate"] += self.rng.randint(-5, 5)
 
                 # Base timestamp for this transmission
-                ts_ms = base_ts_ms + step * ts_step_ms
+                ts_ms = int(base_ts_ms + step * ts_step_ms)
                 # Add tiny communication jitter (temporal variation)
-                ts_ms += self.rng.uniform(-2.0, 2.0)
+                jitter = self.rng.randint(-2, 2)
+                ts_ms = max(0, ts_ms + jitter)
 
                 # Construct default benign CAM message
                 msg = self._build_raw_message(state, ts_ms, expected_label=config.expected_label)
@@ -311,7 +312,7 @@ class HeldOutScenarioGenerator:
         messages.sort(key=lambda m: m["cam"]["generation_delta_time"])
         return messages
 
-    def _build_raw_message(self, state: Dict[str, Any], ts_ms: float, expected_label: str) -> Dict[str, Any]:
+    def _build_raw_message(self, state: Dict[str, Any], ts_ms: int, expected_label: str) -> Dict[str, Any]:
         """Map vehicle state properties into a standard V2X JSON dictionary format."""
         msg = {
             "header": {
@@ -319,7 +320,7 @@ class HeldOutScenarioGenerator:
                 "message_id": 1 if state["msg_type"] == "CAM" else 2,
             },
             "cam": {
-                "generation_delta_time": round(ts_ms, 2),
+                "generation_delta_time": int(ts_ms),
                 "cam_parameters": {
                     "basic_container": {
                         "station_type": state["station_type"],

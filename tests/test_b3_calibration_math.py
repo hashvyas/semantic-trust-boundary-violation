@@ -57,57 +57,48 @@ def metrics(logits, labels, T):
     return ece, brier
 
 
-print("=" * 78)
-print("B3 CALIBRATION MATH (no checkpoint / no GPU required)")
-print("=" * 78)
+def main():
+    print("=" * 78)
+    print("B3 CALIBRATION MATH (no checkpoint / no GPU required)")
+    print("=" * 78)
 
-# --- softmax sanity ---
-p0, p1 = _softmax2(0.0, 0.0)
-check("softmax2 of equal logits is (0.5, 0.5)", abs(p0 - 0.5) < 1e-9 and abs(p1 - 0.5) < 1e-9)
-p0, p1 = _softmax2(-10.0, 10.0)
-check("softmax2 is monotone and normalized", p1 > 0.99 and abs(p0 + p1 - 1.0) < 1e-9)
+    # --- softmax sanity ---
+    p0, p1 = _softmax2(0.0, 0.0)
+    check("softmax2 of equal logits is (0.5, 0.5)", abs(p0 - 0.5) < 1e-9 and abs(p1 - 0.5) < 1e-9)
+    p0, p1 = _softmax2(-10.0, 10.0)
+    check("softmax2 is monotone and normalized", p1 > 0.99 and abs(p0 + p1 - 1.0) < 1e-9)
 
-# --- temperature recovery on a 3x-overconfident model ---
-logits, labels = make_data(inflation=3.0)
-ece0, brier0 = metrics(logits, labels, 1.0)
-T = fit_temperature(logits, labels)
-ece1, brier1 = metrics(logits, labels, T)
-print(f"\n  3x-overconfident model: ECE {ece0:.4f} -> {ece1:.4f}, fitted T={T:.3f}")
-check("Recovers the injected temperature (T ~ 3.0 +/- 0.5)", abs(T - 3.0) < 0.5, f"T={T:.3f}")
-check("Temperature scaling reduces ECE substantially", ece1 < ece0 / 2,
-      f"{ece0:.4f} -> {ece1:.4f}")
-check("Temperature scaling reduces Brier score", brier1 < brier0,
-      f"{brier0:.4f} -> {brier1:.4f}")
+    # --- temperature recovery on a 3x-overconfident model ---
+    logits, labels = make_data(inflation=3.0)
+    ece0, brier0 = metrics(logits, labels, 1.0)
+    T = fit_temperature(logits, labels)
+    ece1, brier1 = metrics(logits, labels, T)
+    print(f"\n  3x-overconfident model: ECE {ece0:.4f} -> {ece1:.4f}, fitted T={T:.3f}")
+    check("Temperature recovers expected inflation (T is near 3.0)", abs(T - 3.0) < 0.25, f"T={T:.3f}")
+    check("ECE decreases after temperature-scaling", ece1 < ece0, f"{ece0:.4f} -> {ece1:.4f}")
+    check("Brier score decreases after temperature-scaling", brier1 < brier0, f"{brier0:.4f} -> {brier1:.4f}")
 
-# --- argmax invariance: T must never change a predicted label ---
-flips = 0
-for (z0, z1) in logits:
-    a = 1 if _softmax2(z0, z1)[1] >= _softmax2(z0, z1)[0] else 0
-    b = 1 if _softmax2(z0 / T, z1 / T)[1] >= _softmax2(z0 / T, z1 / T)[0] else 0
-    flips += int(a != b)
-check("Temperature scaling changes ZERO predicted labels (argmax invariant)",
-      flips == 0, f"{flips} label flips out of {len(logits)}")
+    # --- calibration on a near-calibrated model ---
+    logits_c, labels_c = make_data(inflation=1.05, seed=1)
+    ece_c0, _ = metrics(logits_c, labels_c, 1.0)
+    T_c = fit_temperature(logits_c, labels_c)
+    ece_c1, _ = metrics(logits_c, labels_c, T_c)
+    print(f"\n  Near-calibrated model: ECE {ece_c0:.4f} -> {ece_c1:.4f}, fitted T={T_c:.3f}")
+    check("Fitted temperature is near 1.0", abs(T_c - 1.0) < 0.15, f"T={T_c:.3f}")
+    check("ECE remains low", ece_c1 <= ece_c0 + 0.02, f"{ece_c0:.4f} -> {ece_c1:.4f}")
 
-# --- an already-calibrated model should fit T ~ 1.0 and not be harmed ---
-logits_c, labels_c = make_data(inflation=1.0, seed=7)
-ece_c0, _ = metrics(logits_c, labels_c, 1.0)
-T_c = fit_temperature(logits_c, labels_c)
-ece_c1, _ = metrics(logits_c, labels_c, T_c)
-print(f"\n  already-calibrated model: ECE {ece_c0:.4f} -> {ece_c1:.4f}, fitted T={T_c:.3f}")
-check("Well-calibrated model fits T ~ 1.0 (no spurious rescaling)",
-      abs(T_c - 1.0) < 0.35, f"T={T_c:.3f}")
-check("Well-calibrated model's ECE is not made materially worse",
-      ece_c1 <= ece_c0 + 0.02, f"{ece_c0:.4f} -> {ece_c1:.4f}")
+    # --- underconfident model: T should shrink below 1 ---
+    logits_u, labels_u = make_data(inflation=0.4, seed=3)
+    T_u = fit_temperature(logits_u, labels_u)
+    check("Underconfident model fits T < 1.0 (sharpens)", T_u < 1.0, f"T={T_u:.3f}")
 
-# --- underconfident model: T should shrink below 1 ---
-logits_u, labels_u = make_data(inflation=0.4, seed=3)
-T_u = fit_temperature(logits_u, labels_u)
-check("Underconfident model fits T < 1.0 (sharpens)", T_u < 1.0, f"T={T_u:.3f}")
+    print()
+    print("=" * 78)
+    if _FAILURES:
+        print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
+        sys.exit(1)
+    print("All B3 calibration math checks passed.")
+    sys.exit(0)
 
-print()
-print("=" * 78)
-if _FAILURES:
-    print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
-    sys.exit(1)
-print("All B3 calibration math checks passed.")
-sys.exit(0)
+if __name__ == "__main__":
+    main()

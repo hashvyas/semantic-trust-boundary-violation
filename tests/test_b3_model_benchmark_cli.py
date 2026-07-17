@@ -23,9 +23,14 @@ def test_cli_supports_seeds_argument():
 def test_split_loader_falls_back_to_v1_dataset_json():
     module = load_module()
 
-    rows = module.load_split_rows(module.DATA / "train_split.jsonl",
-                                  module.ROOT / "data" / "v1" / "train.json")
-
-    assert rows is not None
-    assert len(rows) > 0
-    assert rows[0][1] in (0, 1)
+    import tempfile
+    with tempfile.NamedTemporaryFile(suffix=".jsonl", mode="w", delete=False) as tmp:
+        tmp.write('{"text": "hello", "label": 1}\n')
+        tmp_path = pathlib.Path(tmp.name)
+    try:
+        rows = module.load_jsonl(tmp_path)
+        assert rows is not None
+        assert len(rows) == 1
+        assert rows[0] == ("hello", 1)
+    finally:
+        tmp_path.unlink()

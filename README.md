@@ -26,6 +26,10 @@ The implemented pipeline combines:
 
 forming a complete end-to-end secure V2X trust architecture.
 
+## Scenario-Relative Time Model
+
+Offline experiments represent time as integer milliseconds elapsed since the beginning of each scenario. This replaces dependence on host wall-clock time and ensures deterministic, reproducible freshness evaluation across repeated executions. Cryptographic certificate validity remains based on real UTC validity intervals and is independent of scenario time.
+
 ---
 
 # Final Architecture

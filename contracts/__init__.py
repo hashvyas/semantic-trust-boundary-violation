@@ -5,5 +5,6 @@ import from b1_scsv, b2_explain, mbd, cp, b3/pipeline.b3_bridge,
 trust_engine, or adapters -- it is a leaf module by design."""
 
 from contracts.trust_evidence import TrustEvidence
+from contracts.timestamp import TimestampMs, compute_age, is_fresh
 
-__all__ = ["TrustEvidence"]
+__all__ = ["TrustEvidence", "TimestampMs", "compute_age", "is_fresh"]

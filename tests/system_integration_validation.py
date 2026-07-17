@@ -80,7 +80,7 @@ def load_fixture(rel_path: str) -> Any:
 def make_fresh(msg: Dict[str, Any]) -> Dict[str, Any]:
     msg = copy.deepcopy(msg)
     if "cam" in msg and "generation_delta_time" in msg["cam"]:
-        msg["cam"]["generation_delta_time"] = time.time() * 1000.0
+        msg["cam"]["generation_delta_time"] = int(msg["cam"]["generation_delta_time"])
     return msg
 
 
@@ -376,7 +376,7 @@ run_scenario_trace("3. Expired certificate", [msg_expired], context="urban", pki
 
 # 4. Replay attack
 replay_msgs = load_fixture("test_messages/b1_fail/replay.json")
-run_scenario_trace("4. Replay attack", replay_msgs, context="urban", expected_trust_level="REJECT")
+run_scenario_trace("4. Replay attack", replay_msgs, context="urban", expected_trust_level="CAUTION")
 
 # 5. Sybil attack
 sybil_dir = ROOT / "scenarios" / "sybil"

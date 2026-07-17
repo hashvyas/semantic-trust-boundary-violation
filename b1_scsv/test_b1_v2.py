@@ -186,11 +186,11 @@ class TestTimestampFreshness(unittest.TestCase):
         # Must pass (no freshness rejection for relative timestamps)
         self.assertNotEqual(result.reason, ValidationFailureReason.STALE_TIMESTAMP)
 
-    def test_fresh_absolute_timestamp_passes(self) -> None:
-        """A message with a current wall-clock ms-epoch timestamp must pass."""
-        now_ms = time.time() * 1000.0
+    def test_current_absolute_timestamp_passes(self) -> None:
+        """A message with a current scenario timestamp must pass."""
+        now_ms = 4000
         msg = _make_raw_cam(station_id=20, timestamp=now_ms)
-        result = self.scsv.check_stateful(msg)
+        result = self.scsv.check_stateful(msg, scenario_time_ms=now_ms)
         self.assertNotEqual(
             result.reason,
             ValidationFailureReason.STALE_TIMESTAMP,
@@ -199,17 +199,19 @@ class TestTimestampFreshness(unittest.TestCase):
 
     def test_stale_absolute_timestamp_rejected(self) -> None:
         """A message with a timestamp 60 seconds in the past must be rejected as stale."""
-        stale_ms = (time.time() - 60) * 1000.0  # 60 seconds ago
+        stale_ms = 4000
+        now_ms = 4000 + 60000
         msg = _make_raw_cam(station_id=30, timestamp=stale_ms)
-        result = self.scsv.check_stateful(msg)
+        result = self.scsv.check_stateful(msg, scenario_time_ms=now_ms)
         self.assertFalse(result.valid, "Stale message must be rejected")
         self.assertEqual(result.reason, ValidationFailureReason.STALE_TIMESTAMP)
 
     def test_future_absolute_timestamp_rejected(self) -> None:
         """A message with a timestamp far in the future must also be rejected."""
-        future_ms = (time.time() + 60) * 1000.0  # 60 seconds future
+        future_ms = 4000 + 60000
+        now_ms = 4000
         msg = _make_raw_cam(station_id=40, timestamp=future_ms)
-        result = self.scsv.check_stateful(msg)
+        result = self.scsv.check_stateful(msg, scenario_time_ms=now_ms)
         self.assertFalse(result.valid, "Future-timestamped message must be rejected")
         self.assertEqual(result.reason, ValidationFailureReason.STALE_TIMESTAMP)
 

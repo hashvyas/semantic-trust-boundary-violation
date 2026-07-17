@@ -417,7 +417,7 @@ class _VehicleStateManager:
         del self._states[oldest_sid]
         logger.debug("VehicleStateManager: evicted state for station_id=%d", oldest_sid)
 
-    def check_cert_rotation(self, state: VehicleState) -> bool:
+    def check_cert_rotation(self, state: VehicleState, current_time_sec: Optional[float] = None) -> bool:
         """Return ``True`` if the station has rotated certificates too frequently.
 
         Counts how many certificate changes occurred within
@@ -435,7 +435,7 @@ class _VehicleStateManager:
         """
         if not state.cert_change_times:
             return False
-        now = time.time()
+        now = current_time_sec if current_time_sec is not None else time.time()
         cutoff = now - self._cert_window
         recent_rotations = sum(1 for t in state.cert_change_times if t >= cutoff)
         return recent_rotations > self._cert_max
@@ -461,7 +461,7 @@ class _VehicleStateManager:
         with self._lock:
             return len(self._states)
 
-    def check_cert_rotation_for_station(self, station_id: int) -> bool:
+    def check_cert_rotation_for_station(self, station_id: int, current_time_sec: Optional[float] = None) -> bool:
         """Public accessor so MBD (via the orchestrator) can query the
         same tracker instance B1 uses internally, per audit finding D1's
         single-source-of-truth resolution. Returns False if the station
@@ -470,7 +470,7 @@ class _VehicleStateManager:
             state = self._states.get(station_id)
             if state is None:
                 return False
-            return self.check_cert_rotation(state)
+            return self.check_cert_rotation(state, current_time_sec)
 
 
 # ===========================================================================
@@ -703,15 +703,15 @@ class SCSV:
     # Public API – V2 extension (opt-in stateful validation)
     # ------------------------------------------------------------------
 
-    def check_cert_rotation_for_station(self, station_id: int) -> bool:
+    def check_cert_rotation_for_station(self, station_id: int, current_time_sec: Optional[float] = None) -> bool:
         """Delegates to the shared VehicleStateManager. See
         _VehicleStateManager.check_cert_rotation_for_station's docstring
         -- this is the accessor MBD (via the orchestrator) uses when
         cert_rotation_owner="mbd", so the rotation-tracking algorithm
         lives in exactly one place (audit finding D1)."""
-        return self._state_manager.check_cert_rotation_for_station(station_id)
+        return self._state_manager.check_cert_rotation_for_station(station_id, current_time_sec)
 
-    def check_stateful(self, message: Any) -> ValidationAssessment:
+    def check_stateful(self, message: Any, scenario_time_ms: Optional[int] = None) -> ValidationAssessment:
         """Full stateful validation of a decoded CAM message.
 
         Refactored to transform B1 into a confidence-aware validation layer.
@@ -720,10 +720,23 @@ class SCSV:
         penalties from the validation score, returning a complete
         ValidationAssessment for subsequent B2 evaluation.
         """
-        wall_time = time.time()
+        # 1. Parse/extract CAM message if possible to get timestamp
+        if isinstance(message, CamMessage):
+            cam = message
+        else:
+            cam, _ = safe_parse_cam(message)
+
+        # 2. Derive scenario time (explicit None check to preserve 0)
+        current_time_ms = (
+            int(scenario_time_ms)
+            if scenario_time_ms is not None
+            else int((cam.timestamp if cam is not None and cam.timestamp is not None else 0))
+        )
+
+        wall_time = current_time_ms / 1000.0
 
         try:
-            return self._check_stateful_impl(message, wall_time)
+            return self._check_stateful_impl(message, wall_time, current_time_ms)
         except Exception as exc:
             logger.warning("SCSV.check_stateful: unexpected error: %s", exc, exc_info=True)
             return ValidationAssessment(
@@ -742,7 +755,7 @@ class SCSV:
                 wall_time=wall_time,
             )
 
-    def _check_stateful_impl(self, message: Any, wall_time: float) -> ValidationAssessment:
+    def _check_stateful_impl(self, message: Any, wall_time: float, current_time_ms: Optional[int] = None) -> ValidationAssessment:
         """Implementation of ``check_stateful`` (separated for testability)."""
 
         # ── Step 1: Parse & Structural Fatal Checks ────────────────────────
@@ -839,7 +852,6 @@ class SCSV:
                 primary_reason = ValidationFailureReason.REPLAY
 
         # ── Step 3: Timestamp freshness (Recoverable) ──────────────────────
-        now_ms = wall_time * 1000.0
         age_ms = 0.0
         is_stale_ts = False
         if cam.timestamp is not None:
@@ -853,17 +865,25 @@ class SCSV:
                 base_details["freshness_ms"] = self._freshness_ms
                 is_stale_ts = True
             elif self._freshness_ms > 0:
-                if cam.timestamp > 1_000_000:  # likely an absolute ms-epoch value
-                    age_ms = abs(now_ms - cam.timestamp)
-                    if age_ms > self._freshness_ms:
-                        checks["timestamp"] = False
-                        validation_score -= self._penalties.get("stale_timestamp", 0.20)
-                        reasons.append(f"Timestamp stale (age {age_ms:.1f} ms)")
-                        if primary_reason is None:
-                            primary_reason = ValidationFailureReason.STALE_TIMESTAMP
-                        base_details["age_ms"] = age_ms
-                        base_details["freshness_ms"] = self._freshness_ms
-                        is_stale_ts = True
+                ref_time_ms = current_time_ms if current_time_ms is not None else int(wall_time * 1000.0)
+                from contracts.timestamp import compute_age, is_fresh
+                try:
+                    age_ms = compute_age(ref_time_ms, cam.timestamp)
+                    fresh = is_fresh(ref_time_ms, cam.timestamp, self._freshness_ms)
+                except ValueError as ve:
+                    # Message is in the future
+                    age_ms = ref_time_ms - cam.timestamp
+                    fresh = False
+
+                if not fresh:
+                    checks["timestamp"] = False
+                    validation_score -= self._penalties.get("stale_timestamp", 0.20)
+                    reasons.append(f"Timestamp stale (age {age_ms:.1f} ms)")
+                    if primary_reason is None:
+                        primary_reason = ValidationFailureReason.STALE_TIMESTAMP
+                    base_details["age_ms"] = age_ms
+                    base_details["freshness_ms"] = self._freshness_ms
+                    is_stale_ts = True
 
         # ── Step 4: Certificate rotation check (Recoverable) ───────────────
         state = self._state_manager.get_or_create(cam.station_id)
@@ -873,7 +893,7 @@ class SCSV:
                 state.cert_change_times.append(wall_time)
             state.cert_ids.append(cam.certificate_id)
 
-        is_cert_anomaly = self._state_manager.check_cert_rotation(state)
+        is_cert_anomaly = self._state_manager.check_cert_rotation(state, current_time_sec=wall_time)
         base_details["cert_rotation_anomaly"] = is_cert_anomaly  # always recorded, both modes
         if is_cert_anomaly and self._cert_rotation_owner == "b1":
             checks["certificate"] = False

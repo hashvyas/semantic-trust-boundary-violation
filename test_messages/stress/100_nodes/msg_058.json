@@ -4,7 +4,7 @@
     "message_id": 1
   },
   "cam": {
-    "generation_delta_time": 9800.0,
+    "generation_delta_time": 5800,
     "cam_parameters": {
       "basic_container": {
         "station_type": 5,

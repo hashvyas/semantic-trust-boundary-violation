@@ -202,6 +202,7 @@ def run_pipeline(
 
     print(f"\nProcessing {total_messages} messages...")
     
+    max_ts = 0
     for idx, msg in enumerate(messages):
         msg_name = f"Msg {idx+1}/{total_messages}"
         if verbose:
@@ -228,7 +229,10 @@ def run_pipeline(
         
         # ── B1 Stateful Check ─────────────────────────────────────────────────
         t0 = time.perf_counter()
-        b1_res = scsv.check_stateful(msg)
+        msg_ts = _nested_get_any(msg, "cam.generation_delta_time") or msg.get("timestamp")
+        if msg_ts is not None:
+            max_ts = max(max_ts, int(msg_ts))
+        b1_res = scsv.check_stateful(msg, scenario_time_ms=max_ts)
         t1 = time.perf_counter()
         b1_latency = (t1 - t0) * 1000.0
         b1_latencies.append(b1_latency)
@@ -942,45 +946,8 @@ def save_log_file(logs: List[Dict[str, Any]], summary: Dict[str, Any]):
 
 
 def adjust_timestamps_to_fresh(messages: List[Dict[str, Any]], path_str: str) -> List[Dict[str, Any]]:
-    if not messages:
-        return messages
-        
-    adjusted_messages = []
-    for m in messages:
-        if not isinstance(m, dict):
-            continue
-            
-        src_file = str(m.get("_source_file", "")).lower()
-        p_str = path_str.lower()
-        
-        # Check if this specific message is a stale_timestamp or replay test
-        if "stale_timestamp" in src_file or "replay" in src_file or "stale_timestamp" in p_str or "replay" in p_str:
-            # Skip adjustment for this message
-            continue
-        adjusted_messages.append(m)
-        
-    if not adjusted_messages:
-        return messages
-        
-    timestamps = []
-    for m in adjusted_messages:
-        ts = _nested_get_any(m, "cam.generation_delta_time")
-        if ts is not None and isinstance(ts, (int, float)) and not math.isnan(ts):
-            timestamps.append(ts)
-            
-    if not timestamps:
-        return messages
-        
-    max_ts = max(timestamps)
-    now_ms = time.time() * 1000.0
-    shift = now_ms - max_ts
-    
-    for m in adjusted_messages:
-        if "cam" in m and isinstance(m["cam"], dict):
-            ts = m["cam"].get("generation_delta_time")
-            if ts is not None and isinstance(ts, (int, float)) and not math.isnan(ts):
-                m["cam"]["generation_delta_time"] = ts + shift
-                
+    # In the scenario-relative integer time model, timestamps are deterministic
+    # and require no wall-clock offsets/shifting.
     return messages
 
 

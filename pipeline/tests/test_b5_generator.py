@@ -89,7 +89,6 @@ class TestHeldOutGenerator:
 
     def test_physical_plausibility_of_benign_nodes(self):
         """Benign generated messages must satisfy all physical plausibility constraints."""
-        scsv = SCSV()
         with tempfile.TemporaryDirectory() as tmp:
             generate_held_out_suite(tmp, seed=42, configs_limit=10, message_count_override=10)
             path = pathlib.Path(tmp)
@@ -98,7 +97,8 @@ class TestHeldOutGenerator:
             for scenario_dir in path.iterdir():
                 if not scenario_dir.is_dir():
                     continue
-                
+
+                scsv = SCSV()
                 # Load metadata
                 with open(scenario_dir / "metadata.json", encoding="utf-8") as f:
                     meta = json.load(f)

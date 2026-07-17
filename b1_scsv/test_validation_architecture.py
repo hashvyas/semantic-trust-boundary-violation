@@ -56,8 +56,8 @@ def test_fatal_missing_mandatory_fields(scsv):
 
 def test_recoverable_stale_timestamp(scsv):
     # Msg with old timestamp
-    now = time.time()
-    stale_ts = (now - 10.0) * 1000.0 # 10s old, freshness is 5s
+    stale_ts = 4000
+    now_ts = 4000 + 10000 # 10s old, freshness is 5s
     msg = {
         "header": {
             "station_id": 1001,
@@ -85,7 +85,7 @@ def test_recoverable_stale_timestamp(scsv):
         }
     }
     
-    res = scsv.check_stateful(msg)
+    res = scsv.check_stateful(msg, scenario_time_ms=now_ts)
     assert res.fatal is False
     assert res.checks["structure"] is True
     assert res.checks["timestamp"] is False
@@ -94,8 +94,7 @@ def test_recoverable_stale_timestamp(scsv):
     assert "Timestamp stale" in res.reasons[0]
 
 def test_recoverable_replay(scsv):
-    now = time.time()
-    ts = now * 1000.0
+    ts = 4000
     msg = {
         "header": {
             "station_id": 1002,
@@ -124,13 +123,13 @@ def test_recoverable_replay(scsv):
     }
     
     # First check: passes
-    res1 = scsv.check_stateful(msg)
+    res1 = scsv.check_stateful(msg, scenario_time_ms=ts)
     assert res1.fatal is False
     assert res1.checks["replay"] is True
     assert res1.validation_score == 1.0
     
     # Second check (identical message): triggers replay
-    res2 = scsv.check_stateful(msg)
+    res2 = scsv.check_stateful(msg, scenario_time_ms=ts)
     assert res2.fatal is False
     assert res2.checks["replay"] is False
     assert res2.validation_score == 1.0 - 0.30 # replay penalty is 0.30
@@ -138,7 +137,7 @@ def test_recoverable_replay(scsv):
 
 def test_explainability_integration(scsv, csia):
     # Run a complete sequence of messages through pipeline and verify ExplainabilityReport
-    now = time.time()
+    now_ms = 4000
     
     # Configure SCSV freshness tolerance to 2 seconds for this test
     scsv._freshness_ms = 2000.0
@@ -151,7 +150,7 @@ def test_explainability_integration(scsv, csia):
     msg1 = {
         "header": {"station_id": 1003, "message_id": 1},
         "cam": {
-            "generation_delta_time": now * 1000.0,
+            "generation_delta_time": now_ms,
             "cam_parameters": {
                 "basic_container": {
                     "station_type": 5,
@@ -170,7 +169,7 @@ def test_explainability_integration(scsv, csia):
     }
     
     # Stale timestamp recoverable msg from same vehicle (3s old, triggers > 2s freshness limit)
-    stale_ts = (now - 3.0) * 1000.0
+    stale_ts = now_ms - 3000
     msg2 = {
         "header": {"station_id": 1003, "message_id": 1},
         "cam": {
@@ -193,10 +192,10 @@ def test_explainability_integration(scsv, csia):
     }
     
     # Execute B1 and attach assessments
-    res1 = scsv.check_stateful(msg1)
+    res1 = scsv.check_stateful(msg1, scenario_time_ms=now_ms)
     msg1["_validation_assessment"] = res1
     
-    res2 = scsv.check_stateful(msg2)
+    res2 = scsv.check_stateful(msg2, scenario_time_ms=now_ms)
     msg2["_validation_assessment"] = res2
     
     assert res2.validation_score == 1.0 - 0.20 # stale timestamp penalty

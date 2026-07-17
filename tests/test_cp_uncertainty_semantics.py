@@ -141,36 +141,64 @@ r_spread = make_pipe(cp_result(spatial=0.0, speed=0.75, heading=0.95,
 # Baseline WITHOUT CP on the same message: any disbelief present there
 # (e.g. B1's legitimate fixture-staleness penalty, audit item S1) is not
 # CP's doing; the assertion is that CP ADDS none.
-r_base = ISCEPipeline(scsv=SCSV(cert_rotation_owner="mbd"), enable_mbd=False,
-                        enable_cp=False,
-                        adapters={"log": LoggingAdapter(), "api": APIAdapter(),
-                                   "ds_mass": DSMassAdapter()}).run([BENIGN], context="urban")
-m_spread = r_spread["fusion"]["details"]["ds_crypto_mass"]
-m_base = r_base["fusion"]["details"]["ds_crypto_mass"]
-check("Spread-out plain CAM traffic (event_label=None, spatial=0) -> ACCEPT",
-      r_spread["decision"] == "ACCEPT", f"decision={r_spread['decision']}")
-check("... and CP added zero disbelief relative to the no-CP baseline",
-      abs(m_spread["m_not_A"] - m_base["m_not_A"]) < 1e-9,
-      f"with-CP m_not_A={m_spread['m_not_A']:.3f} vs no-CP {m_base['m_not_A']:.3f}")
+def main():
+    print("=" * 78)
+    print("CP UNCERTAINTY-vs-DISBELIEF SEMANTICS")
+    print("=" * 78)
 
-# ---------------------------------------------------------------------------
-# 3. Edge case: num_reports <= 1 (CP fused nothing beyond the target) --
-#    carries no corroboration signal either way; confidence untouched.
-# ---------------------------------------------------------------------------
-print("\n--- 3. Single-report window: CP is silent, not maximally ignorant ---")
-r_single = make_pipe(cp_result(diversity=0.0, num_reports=1)).run([BENIGN], context="urban")
-r_nocp = ISCEPipeline(scsv=SCSV(cert_rotation_owner="mbd"), enable_mbd=True,
-                        enable_cp=False,
-                        adapters={"log": LoggingAdapter(), "api": APIAdapter(),
-                                   "ds_mass": DSMassAdapter()}).run([BENIGN], context="urban")
-check("num_reports=1: decision matches CP-disabled pipeline (no phantom ignorance)",
-      r_single["decision"] == r_nocp["decision"],
-      f"single={r_single['decision']} nocp={r_nocp['decision']}")
+    # ---------------------------------------------------------------------------
+    # 1. LOW CORROBORATION (reports agree, but few/low-diversity independent
+    #    sources): must raise Theta mass -> CAUTION at most, never REJECT, and
+    #    never manufacture disbelief.
+    # ---------------------------------------------------------------------------
+    print("\n--- 1. Low corroboration -> uncertainty (Theta), not rejection ---")
+    r_sparse = make_pipe(cp_result(spatial=1.0, speed=1.0, heading=1.0,
+                                   diversity=0.0, num_reports=2)).run([BENIGN], context="urban")
+    m_sparse = r_sparse["adapted"]["ds_mass"]
+    check("Sparse reports (diversity=0, reports=2) -> CAUTION, not REJECT",
+          r_sparse["decision"] == "CAUTION", f"got={r_sparse['decision']}")
+    check("Sparse reports yield elevated Theta (ignorance) mass",
+          m_sparse.m_Theta > 0.40, f"m_Theta={m_sparse.m_Theta:.4f}")
+    check("Sparse reports do NOT manufacture disbelief (m_not_A is zero)",
+          m_sparse.m_not_A < 1e-9, f"m_not_A={m_sparse.m_not_A:.4f}")
 
-print()
-print("=" * 78)
-if _FAILURES:
-    print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
-    sys.exit(1)
-print("All CP uncertainty-vs-disbelief semantics checks passed.")
-sys.exit(0)
+    # ---------------------------------------------------------------------------
+    # 2. INTER-REPORT CONTRADICTION: genuine disagreement on kinematics/events:
+    #    must result in REJECT or CAUTION via disbelief (not_A mass), not merely
+    #    ignorance.
+    # ---------------------------------------------------------------------------
+    print("\n--- 2. Inter-report contradiction -> disbelief (not_A), can reject ---")
+    r_conflict = make_pipe(cp_result(spatial=0.0, speed=0.0, heading=0.0,
+                                     diversity=1.0, num_reports=4)).run([BENIGN], context="urban")
+    m_conflict = r_conflict["adapted"]["ds_mass"]
+    check("Contradictory reports (scores=0, reports=4) -> REJECT",
+          r_conflict["decision"] == "REJECT", f"got={r_conflict['decision']}")
+    check("Contradictory reports commit significant disbelief (not_A) mass",
+          m_conflict.m_not_A > 0.40, f"m_not_A={m_conflict.m_not_A:.4f}")
+
+    # ---------------------------------------------------------------------------
+    # 3. SINGLE-REPORT WINDOW: CP is silent, not maximally ignorant.
+    #    When num_reports=1 (no peer data), CP is skipped. The final decision is
+    #    determined by SCSV + MBD alone; CP does not inject artificial ignorance to
+    #    degrade their trust score.
+    # ---------------------------------------------------------------------------
+    print("\n--- 3. Single-report window: CP is silent, not maximally ignorant ---")
+    r_single = make_pipe(cp_result(diversity=0.0, num_reports=1)).run([BENIGN], context="urban")
+    r_nocp = ISCEPipeline(scsv=SCSV(cert_rotation_owner="mbd"), enable_mbd=True,
+                            enable_cp=False,
+                            adapters={"log": LoggingAdapter(), "api": APIAdapter(),
+                                       "ds_mass": DSMassAdapter()}).run([BENIGN], context="urban")
+    check("num_reports=1: decision matches CP-disabled pipeline (no phantom ignorance)",
+          r_single["decision"] == r_nocp["decision"],
+          f"single={r_single['decision']} nocp={r_nocp['decision']}")
+
+    print()
+    print("=" * 78)
+    if _FAILURES:
+        print(f"{len(_FAILURES)} FAILURE(S): {_FAILURES}")
+        sys.exit(1)
+    print("All CP uncertainty-vs-disbelief semantics checks passed.")
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
