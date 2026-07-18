@@ -1,0 +1,22 @@
+{
+  "demo": false,
+  "n": 124,
+  "caution_blocks": false,
+  "DAR": 0.8467741935483871,
+  "DRR": 0.15322580645161288,
+  "DCR": 0.7016129032258065,
+  "UDPR": 0.34782608695652173,
+  "UDPR_ci95": [
+    0.2127659574468085,
+    0.4893725575336516
+  ],
+  "RUAR": 0.8416666666666667,
+  "benign_false_block": 0.0,
+  "counts": {
+    "malicious": 120,
+    "benign": 4,
+    "comm_unsafe_accepts": 46,
+    "prevented": 16,
+    "residual_unsafe": 101
+  }
+}

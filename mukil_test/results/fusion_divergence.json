@@ -1,0 +1,23 @@
+{
+  "demo": false,
+  "n": 124,
+  "decisions_changed": 123,
+  "cause_taxonomy": {
+    "inter-source conflict": 77,
+    "low B3 confidence": 0,
+    "corroboration shift": 46
+  },
+  "b3_only": {
+    "f1": NaN,
+    "rec": 0.0,
+    "fpr": 0.0
+  },
+  "fused": {
+    "f1": 0.9794238683127573,
+    "rec": 0.9916666666666667,
+    "fpr": 1.0
+  },
+  "delta_f1": NaN,
+  "unsafe_acceptances_b3": 120,
+  "unsafe_acceptances_fused": 1
+}

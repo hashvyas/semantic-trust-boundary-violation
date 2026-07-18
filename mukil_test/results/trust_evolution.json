@@ -1,0 +1,31 @@
+{
+  "demo": false,
+  "layers": [
+    "PKI",
+    "B1",
+    "MBD",
+    "B2",
+    "CP",
+    "B3",
+    "Trust\nEngine",
+    "Fusion",
+    "Decision"
+  ],
+  "trust_inflation_rows": [
+    [
+      "semantic attack",
+      "3.026",
+      "0.000"
+    ],
+    [
+      "colluding",
+      "2.971",
+      "0.000"
+    ],
+    [
+      "adaptive",
+      "2.995",
+      "-0.015"
+    ]
+  ]
+}
