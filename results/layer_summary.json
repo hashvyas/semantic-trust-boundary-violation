@@ -1,0 +1,80 @@
+{
+  "n_messages": 1800,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "full_stack": false,
+  "confusion": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 1575,
+    "tn": 225
+  },
+  "metrics": {
+    "accuracy": 0.125,
+    "precision": null,
+    "recall": 0.0,
+    "f1": null,
+    "fpr": 0.0
+  },
+  "catch_layer_counts": {
+    "ACCEPT": 243,
+    "B1": 1557
+  },
+  "per_family": {
+    "prompt_injection": {
+      "correct": 0,
+      "total": 225,
+      "acc": 0.0
+    },
+    "instruction_override": {
+      "correct": 0,
+      "total": 225,
+      "acc": 0.0
+    },
+    "role_manipulation": {
+      "correct": 0,
+      "total": 225,
+      "acc": 0.0
+    },
+    "context_poisoning": {
+      "correct": 0,
+      "total": 300,
+      "acc": 0.0
+    },
+    "multi_message": {
+      "correct": 0,
+      "total": 150,
+      "acc": 0.0
+    },
+    "tool_manipulation": {
+      "correct": 0,
+      "total": 150,
+      "acc": 0.0
+    },
+    "retrieval_poisoning": {
+      "correct": 0,
+      "total": 150,
+      "acc": 0.0
+    },
+    "mixed_attacks": {
+      "correct": 0,
+      "total": 150,
+      "acc": 0.0
+    },
+    "benign_controls": {
+      "correct": 225,
+      "total": 225,
+      "acc": 1.0
+    }
+  },
+  "latency_ms": {
+    "p50": 0.1252999999792337,
+    "p90": 0.14529999998558196,
+    "p95": 0.17020000001366498,
+    "p99": 0.2167000000099506,
+    "mean": 0.12966955555596213
+  }
+}

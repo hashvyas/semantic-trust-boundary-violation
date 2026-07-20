@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-07-20T10:31:18",
+  "n_target": 600,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "full_stack": false,
+  "python": "3.12.10",
+  "note": "All values measured by running the real pipeline. No synthetic data."
+}
