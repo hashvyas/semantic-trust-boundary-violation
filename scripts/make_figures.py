@@ -146,8 +146,10 @@ def fig_confusion(s, outdir, sample):
     cm = np.array([[c["tp"], c["fn"]], [c["fp"], c["tn"]]])
     fig, ax = plt.subplots(figsize=(4.6, 4))
     ax.imshow(cm, cmap="Blues")
-    ax.set_xticks([0, 1]); ax.set_xticklabels(["pred MAL", "pred BEN"])
-    ax.set_yticks([0, 1]); ax.set_yticklabels(["actual MAL", "actual BEN"])
+    ax.set_xticks([0, 1]); ax.set_xticklabels(["Malicious", "Benign"])
+    ax.set_yticks([0, 1]); ax.set_yticklabels(["Malicious", "Benign"])
+    ax.set_xlabel("Predicted Label")
+    ax.set_ylabel("Actual Label")
     mx = cm.max() or 1
     for i in range(2):
         for j in range(2):
